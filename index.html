@@ -227,8 +227,8 @@ will-change: opacity;
                     <!-- Arc element left -->
                     <div class="absolute bottom-28 -left-6 w-12 h-12 rounded-full border-2 border-blue-500/25 border-t-transparent border-r-transparent rotate-45"></div>
 
-                    <!-- Photo (cutout style — no border, no rounded corners, blended) -->
-                    <img src="file_00000000fcc871f5a31b72f0c1eff7f2.png" alt="Abhay" class="relative z-10 w-[300px] h-[400px] object-cover object-top" style="mask-image: linear-gradient(to bottom, black 80%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);">
+                    <!-- Photo (smooth edge blend into background) -->
+                    <img src="file_00000000fcc871f5a31b72f0c1eff7f2.png" alt="Abhay" class="relative z-10 w-[300px] h-[400px] object-cover object-top" style="mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 85%, transparent 100%), linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%); mask-composite: intersect; -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 85%, transparent 100%), linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%); -webkit-mask-composite: source-in;">
                 </div>
             </div>
 
