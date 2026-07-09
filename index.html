@@ -207,19 +207,16 @@ will-change: opacity;
                 <!-- Right Side: Sleek Bento Portrait Card -->
                 <div class="hidden md:flex flex-shrink-0 opacity-0 animate-fade-in delay-300 relative items-center justify-center w-[330px] h-[410px] group">
                     <!-- Premium ambient gradient glow behind card -->
-                    <div class="absolute w-[290px] h-[370px] bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 rounded-[32px] blur-3xl pointer-events-none opacity-85"></div>
+                    <div class="absolute w-[290px] h-[370px] bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 rounded-[36px] blur-3xl pointer-events-none opacity-85"></div>
                     
-                    <!-- Glass Bento Card with double border look -->
-                    <div class="glass-card rounded-3xl p-1.5 w-full h-full relative overflow-hidden shadow-2xl shadow-indigo-500/5 dark:shadow-black/40">
-                        <div class="h-full w-full bg-neutral-100 dark:bg-[#0E0E10] rounded-[18px] overflow-hidden relative border border-black/5 dark:border-white/5">
-                            <!-- Photo (Directly rounded corners to avoid sharp edges) -->
-                            <img src="file_00000000fcc871f5a31b72f0c1eff7f2.png" alt="Abhay" class="w-full h-full object-cover object-center scale-[1.05] group-hover:scale-110 rounded-[18px] transition-transform duration-700 ease-out">
+                    <!-- Glass Bento Card with distinct borders and highly rounded corners -->
+                    <div class="glass-card rounded-[36px] p-2 w-full h-full relative overflow-hidden shadow-2xl shadow-indigo-500/5 dark:shadow-black/40 border border-black/10 dark:border-white/20">
+                        <div class="h-full w-full bg-neutral-100 dark:bg-[#0E0E10] rounded-[28px] overflow-hidden relative border border-black/5 dark:border-white/10">
+                            <!-- Photo (Directly rounded corners and smooth radial edge fade vignette) -->
+                            <img src="file_00000000fcc871f5a31b72f0c1eff7f2.png" alt="Abhay" class="w-full h-full object-cover object-center scale-[1.05] group-hover:scale-110 rounded-[28px] transition-transform duration-700 ease-out" style="mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 55%, transparent 100%); -webkit-mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 55%, transparent 100%);">
                             
                             <!-- Glass shine reflection overlay on hover -->
-                            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-[18px]"></div>
-                            
-                            <!-- Bottom gradient shadow overlay -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none rounded-[18px]"></div>
+                            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-[28px]"></div>
                         </div>
                     </div>
                 </div>
