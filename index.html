@@ -52,37 +52,23 @@ font-family: 'Inter', sans-serif;
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-/* Cinematic Noise Overlay */
-.noise-overlay {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-pointer-events: none;
-z-index: 50;
-opacity: 0.03;
-    /* Noise texture is generated dynamically via JavaScript in DOMContentLoaded for performance */
-}
 /* Hide Scrollbar but keep functionality */
 ::-webkit-scrollbar { width: 0px; background: transparent; }
 /* Custom Selection */
 ::selection { background: rgba(99, 102, 241, 0.2); color: #818cf8; }
-/* Glass & Border Utilities */
+/* Glass & Border Utilities — NO backdrop-filter for performance */
 .glass-panel {
-background: rgba(255, 255, 255, 0.7);
-backdrop-filter: blur(12px);
--webkit-backdrop-filter: blur(12px);
+background: rgba(255, 255, 255, 0.85);
 border: 1px solid rgba(0, 0, 0, 0.08);
 }
 .dark .glass-panel {
-background: rgba(15, 17, 18, 0.6);
+background: rgba(15, 17, 18, 0.88);
 border: 1px solid rgba(255, 255, 255, 0.08);
 }
 .glass-card {
 background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
 border: 1px solid rgba(255,255,255,0.05);
-transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
 }
 .dark .glass-card:hover {
 border-color: rgba(255,255,255,0.15);
@@ -123,15 +109,24 @@ animation: blink 1s step-end infinite;
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }
 .delay-500 { animation-delay: 500ms; }
+/* GPU-promoted ambient glows — uses contain and will-change instead of blur */
+.ambient-glow {
+position: fixed;
+pointer-events: none;
+border-radius: 50%;
+opacity: 0;
+transition: opacity 1s;
+will-change: opacity;
+}
+.dark .ambient-glow { opacity: 0.25; }
+/* Canvas GPU hint */
+#network-canvas { will-change: contents; }
 </style></head>
-<body class="bg-[#FAFAFA] dark:bg-dark text-neutral-900 dark:text-[#EAEAEA] min-h-screen relative overflow-x-hidden transition-colors duration-700">
+<body class="bg-[#FAFAFA] dark:bg-dark text-neutral-900 dark:text-[#EAEAEA] min-h-screen relative overflow-x-hidden transition-colors duration-500">
 
-    <!-- Cinematic Noise -->
-    <div class="noise-overlay"></div>
-
-    <!-- Ambient Background Glows (Dark Mode Only) -->
-    <div class="fixed top-[-20%] left-[-10%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen opacity-0 dark:opacity-40 transition-opacity duration-1000"></div>
-    <div class="fixed bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[120px] pointer-events-none mix-blend-screen opacity-0 dark:opacity-40 transition-opacity duration-1000"></div>
+    <!-- Ambient Background Glows — radial-gradient instead of blur-[120px] for GPU performance -->
+    <div class="ambient-glow" style="top:-15%;left:-8%;width:500px;height:500px;background:radial-gradient(circle,rgba(99,102,241,0.18) 0%,transparent 70%)"></div>
+    <div class="ambient-glow" style="bottom:-15%;right:-8%;width:600px;height:600px;background:radial-gradient(circle,rgba(168,85,247,0.10) 0%,transparent 70%)"></div>
 
     <!-- Neural Network Canvas -->
     <canvas id="network-canvas" class="fixed top-0 left-0 w-full h-full z-0 opacity-20 dark:opacity-30 pointer-events-none"></canvas>
@@ -230,8 +225,7 @@ animation: blink 1s step-end infinite;
                     <div class="h-full w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-[20px] overflow-hidden relative flex flex-col">
                         <!-- Image Area -->
                         <div class="flex-1 relative flex items-center justify-center bg-indigo-500/5 overflow-hidden">
-                            <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
-                            <div class="w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:scale-125 transition-transform duration-700 ease-out"></div>
+                            <div class="w-64 h-64 rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:scale-110 transition-transform duration-500 ease-out" style="background:radial-gradient(circle,rgba(99,102,241,0.15) 0%,transparent 70%)"></div>
                             <iconify-icon icon="lucide:building-2" width="80" class="text-neutral-900 dark:text-white relative z-10 drop-shadow-2xl" stroke-width="1"></iconify-icon>
                         </div>
                         <!-- Content -->
@@ -405,8 +399,6 @@ animation: blink 1s step-end infinite;
                             <div class="bg-[#F5F5F5] dark:bg-black rounded-xl h-64 md:h-96 flex items-center justify-center relative overflow-hidden group">
                                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
                                 <iconify-icon id="detail-icon" icon="lucide:brain-circuit" width="96" class="text-neutral-900 dark:text-white relative z-10" stroke-width="0.8"></iconify-icon>
-                                <!-- Interactive Glow -->
-                                <div class="absolute w-full h-full opacity-30 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
                             </div>
                         </div>
                         
@@ -647,38 +639,19 @@ animation: blink 1s step-end infinite;
             }
         }
 
-        // --- High-Performance Noise Texture Generator ---
-        function generateNoiseTexture() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 128;
-            canvas.height = 128;
-            const ctx = canvas.getContext('2d');
-            const imgData = ctx.createImageData(128, 128);
-            const data = imgData.data;
-            
-            for (let i = 0; i < data.length; i += 4) {
-                const val = Math.floor(Math.random() * 255);
-                data[i] = val;
-                data[i+1] = val;
-                data[i+2] = val;
-                data[i+3] = 255;
-            }
-            
-            ctx.putImageData(imgData, 0, 0);
-            return canvas.toDataURL();
-        }
-
-        // --- Refined Network Animation ---
+        // --- Lightweight Network Animation (30fps, batched draws) ---
         const canvas = document.getElementById('network-canvas');
         const ctx = canvas.getContext('2d');
         let width, height;
         let particles = [];
-        
-        // Configuration
+        let animId = null;
+        let lastFrame = 0;
+        const FRAME_INTERVAL = 1000 / 30; // Cap at 30fps — plenty smooth for ambient bg
+
         const CONFIG = {
-            particleCount: 50, // Slightly reduced for better performance on low-end screens
-            connectionDist: 150, // Slightly reduced for cleaner visuals and faster loop
-            speed: 0.3
+            particleCount: 30,
+            connectionDist: 120,
+            speed: 0.25
         };
 
         function resize() {
@@ -687,94 +660,89 @@ animation: blink 1s step-end infinite;
             initParticles();
         }
 
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * CONFIG.speed;
-                this.vy = (Math.random() - 0.5) * CONFIG.speed;
-                this.size = Math.random() * 1.5 + 0.5;
-            }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                
-                // Bounce
-                if(this.x < 0 || this.x > width) this.vx *= -1;
-                if(this.y < 0 || this.y > height) this.vy *= -1;
-            }
-            draw() {
-                const isDark = document.documentElement.classList.contains('dark');
-                ctx.fillStyle = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-                ctx.fill();
-            }
-        }
-
         function initParticles() {
             particles = [];
-            for(let i=0; i<CONFIG.particleCount; i++) {
-                particles.push(new Particle());
+            for (let i = 0; i < CONFIG.particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * CONFIG.speed,
+                    vy: (Math.random() - 0.5) * CONFIG.speed,
+                    size: Math.random() * 1.5 + 0.5
+                });
             }
         }
 
-        function animate() {
+        function animate(timestamp) {
+            animId = requestAnimationFrame(animate);
+
+            // Throttle to ~30fps
+            if (timestamp - lastFrame < FRAME_INTERVAL) return;
+            lastFrame = timestamp;
+
             ctx.clearRect(0, 0, width, height);
             const isDark = document.documentElement.classList.contains('dark');
-            
-            // Update and draw particles first
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            
+            const dotColor = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)';
+
+            // Update positions & draw dots in a single batched path
+            ctx.fillStyle = dotColor;
+            ctx.beginPath();
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+                ctx.moveTo(p.x + p.size, p.y);
+                ctx.arc(p.x, p.y, p.size, 0, 6.2832);
+            }
+            ctx.fill();
+
+            // Draw connections — batch lines by opacity bucket for fewer state changes
             const minDist = CONFIG.connectionDist;
             const minDistSq = minDist * minDist;
-            
-            // Draw connections optimized
+            const baseAlpha = isDark ? 0.12 : 0.08;
             ctx.lineWidth = 0.5;
-            for(let index = 0; index < particles.length; index++) {
-                const p = particles[index];
-                for(let j = index + 1; j < particles.length; j++) {
+
+            // Single path for all lines (uniform low alpha — avoids per-line strokeStyle changes)
+            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
+            ctx.beginPath();
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                for (let j = i + 1; j < particles.length; j++) {
                     const p2 = particles[j];
                     const dx = p.x - p2.x;
                     const dy = p.y - p2.y;
-                    const distSq = dx*dx + dy*dy;
-                    
-                    if(distSq < minDistSq) {
-                        const dist = Math.sqrt(distSq);
-                        ctx.beginPath();
-                        ctx.strokeStyle = isDark 
-                            ? `rgba(255,255,255,${0.15 - dist/minDist*0.15})`
-                            : `rgba(0,0,0,${0.1 - dist/minDist*0.1})`;
+                    if (dx * dx + dy * dy < minDistSq) {
                         ctx.moveTo(p.x, p.y);
                         ctx.lineTo(p2.x, p2.y);
-                        ctx.stroke();
                     }
                 }
             }
-            requestAnimationFrame(animate);
+            ctx.stroke();
         }
+
+        // Pause animation when tab is hidden to save CPU
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                if (animId) { cancelAnimationFrame(animId); animId = null; }
+            } else {
+                if (!animId) { lastFrame = 0; animId = requestAnimationFrame(animate); }
+            }
+        });
 
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(resize, 150);
+            resizeTimeout = setTimeout(resize, 200);
         });
-        
+
         // Init
         document.addEventListener('DOMContentLoaded', () => {
-            // Apply dynamic high-performance noise texture
-            const noiseOverlay = document.querySelector('.noise-overlay');
-            if (noiseOverlay) {
-                noiseOverlay.style.backgroundImage = `url(${generateNoiseTexture()})`;
-            }
-            
             const navLinks = document.querySelectorAll('.nav-link[data-target="home"]');
             navLinks.forEach(l => l.classList.add('active'));
             resize();
-            animate();
+            animId = requestAnimationFrame(animate);
         });
 
     </script>
