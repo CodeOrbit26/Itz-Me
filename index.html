@@ -211,9 +211,12 @@ will-change: opacity;
                     
                     <!-- Glass Bento Card with distinct borders and highly rounded corners -->
                     <div class="glass-card rounded-[36px] p-2 w-full h-full relative overflow-hidden shadow-2xl shadow-indigo-500/5 dark:shadow-black/40 border border-black/10 dark:border-white/20">
-                        <div class="h-full w-full bg-neutral-100 dark:bg-[#0E0E10] rounded-[28px] overflow-hidden relative border border-black/5 dark:border-white/10">
-                            <!-- Photo (Directly rounded corners and smooth radial edge fade vignette) -->
-                            <img src="file_00000000fcc871f5a31b72f0c1eff7f2.png" alt="Abhay" class="w-full h-full object-cover object-center scale-[1.05] group-hover:scale-110 rounded-[28px] transition-transform duration-700 ease-out" style="mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 55%, transparent 100%); -webkit-mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 55%, transparent 100%);">
+                        <div class="h-full w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-[28px] overflow-hidden relative border border-black/5 dark:border-white/10">
+                            <!-- Photo (Directly rounded corners, full opacity) -->
+                            <img src="file_00000000fcc871f5a31b72f0c1eff7f2.png" alt="Abhay" class="w-full h-full object-cover object-center scale-[1.05] group-hover:scale-110 rounded-[28px] transition-transform duration-700 ease-out">
+                            
+                            <!-- Vignette overlay that matches card background colors -->
+                            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,#FAFAFA_98%)] dark:bg-[radial-gradient(ellipse_at_center,transparent_30%,#0A0A0A_98%)] pointer-events-none rounded-[28px]"></div>
                             
                             <!-- Glass shine reflection overlay on hover -->
                             <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-[28px]"></div>
