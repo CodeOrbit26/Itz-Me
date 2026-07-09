@@ -129,7 +129,7 @@ will-change: opacity;
     <div class="ambient-glow" style="bottom:-15%;right:-8%;width:600px;height:600px;background:radial-gradient(circle,rgba(168,85,247,0.10) 0%,transparent 70%)"></div>
 
     <!-- Neural Network Canvas -->
-    <canvas id="network-canvas" class="fixed top-0 left-0 w-full h-full z-0 opacity-20 dark:opacity-30 pointer-events-none"></canvas>
+    <canvas id="network-canvas" class="fixed top-0 left-0 w-full h-full z-0 opacity-70 dark:opacity-90 pointer-events-none"></canvas>
 
     <!-- Navigation -->
     <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-40 w-full max-w-fit px-2">
@@ -658,7 +658,7 @@ will-change: opacity;
             connectionDist: 160,
             mouseRadius: 120,
             mouseForce: 0.02,
-            speed: 0.3
+            speed: 0.7
         };
 
         function resize() {
@@ -675,7 +675,7 @@ will-change: opacity;
                     y: Math.random() * height,
                     vx: (Math.random() - 0.5) * CONFIG.speed,
                     vy: (Math.random() - 0.5) * CONFIG.speed,
-                    size: Math.random() * 1.2 + 0.8  // uniform 0.8–2.0 range
+                    size: Math.random() * 1.8 + 1.0  // 1.0–2.8 range — clearly visible
                 });
             }
         }
@@ -722,8 +722,8 @@ will-change: opacity;
             const thirdSq = maxDistSq / 3;
 
             // Bucket 1: far lines (⅔–1 of maxDist)
-            ctx.lineWidth = 0.4;
-            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)';
+            ctx.lineWidth = 0.6;
+            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)';
             ctx.beginPath();
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
@@ -740,8 +740,8 @@ will-change: opacity;
             ctx.stroke();
 
             // Bucket 2: mid lines (⅓–⅔ of maxDist)
-            ctx.lineWidth = 0.5;
-            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.04)';
+            ctx.lineWidth = 0.8;
+            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)';
             ctx.beginPath();
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
@@ -758,8 +758,8 @@ will-change: opacity;
             ctx.stroke();
 
             // Bucket 3: close lines (0–⅓ of maxDist) — most visible
-            ctx.lineWidth = 0.7;
-            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.08)';
+            ctx.lineWidth = 1.0;
+            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.15)';
             ctx.beginPath();
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
@@ -775,8 +775,8 @@ will-change: opacity;
             }
             ctx.stroke();
 
-            // --- Draw particle dots (all batched into one path) ---
-            ctx.fillStyle = isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.5)';
+            // --- Draw particle dots ---
+            ctx.fillStyle = isDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.6)';
             ctx.beginPath();
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
