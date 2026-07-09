@@ -198,18 +198,13 @@ will-change: opacity;
                 </div>
 
                 <!-- Right: Photo with Vibrant Glow (Reference Style) -->
-                <div class="hidden md:flex flex-shrink-0 opacity-0 animate-fade-in delay-300 relative items-center justify-center w-[380px] h-[440px]">
-                    <!-- Large vibrant gradient circle -->
-                    <div class="absolute w-[320px] h-[320px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%]" style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 35%, #C026D3 65%, #EC4899 100%); opacity: 0.7; filter: blur(2px);"></div>
-
-                    <!-- Decorative ring -->
-                    <div class="absolute w-[350px] h-[350px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] border border-white/5"></div>
+                <div class="hidden md:flex flex-shrink-0 opacity-0 animate-fade-in delay-300 relative items-center justify-center w-[380px] h-[460px]">
+                    <!-- Large vibrant gradient circle — bigger, covers more area -->
+                    <div class="absolute w-[360px] h-[360px] rounded-full top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2" style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 35%, #C026D3 65%, #EC4899 100%); opacity: 0.6; filter: blur(8px);"></div>
 
                     <!-- Floating decorative elements -->
-                    <!-- Circle outline top-right -->
-                    <div class="absolute top-4 right-2 w-6 h-6 rounded-full border-2 border-pink-500/40"></div>
-                    <!-- Small dot cluster top-left -->
-                    <div class="absolute top-16 -left-6 grid grid-cols-3 gap-1 opacity-40">
+                    <div class="absolute top-2 right-0 w-6 h-6 rounded-full border-2 border-pink-500/30"></div>
+                    <div class="absolute top-14 -left-8 grid grid-cols-3 gap-1 opacity-30">
                         <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
                         <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
                         <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
@@ -217,18 +212,15 @@ will-change: opacity;
                         <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
                         <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
                     </div>
-                    <!-- Diagonal slash accent -->
-                    <div class="absolute top-10 right-[-20px] w-12 h-[2px] bg-gradient-to-r from-purple-500/60 to-transparent rotate-[-35deg]"></div>
-                    <div class="absolute bottom-20 right-[-10px] w-8 h-[2px] bg-gradient-to-r from-pink-500/40 to-transparent rotate-[25deg]"></div>
-                    <!-- Floating dot accents -->
-                    <div class="absolute top-8 left-8 w-2 h-2 rounded-full bg-blue-500/50 animate-pulse"></div>
-                    <div class="absolute bottom-24 -left-2 w-2.5 h-2.5 rounded-full bg-purple-500/40 animate-pulse delay-500"></div>
-                    <div class="absolute bottom-12 right-4 w-1.5 h-1.5 rounded-full bg-indigo-400/60 animate-pulse delay-300"></div>
-                    <!-- Arc element left -->
-                    <div class="absolute bottom-28 -left-6 w-12 h-12 rounded-full border-2 border-blue-500/25 border-t-transparent border-r-transparent rotate-45"></div>
+                    <div class="absolute top-8 right-[-20px] w-10 h-[2px] bg-gradient-to-r from-purple-500/50 to-transparent rotate-[-35deg]"></div>
+                    <div class="absolute bottom-16 right-[-10px] w-7 h-[2px] bg-gradient-to-r from-pink-500/30 to-transparent rotate-[25deg]"></div>
+                    <div class="absolute top-6 left-6 w-2 h-2 rounded-full bg-blue-500/40 animate-pulse"></div>
+                    <div class="absolute bottom-20 -left-3 w-2.5 h-2.5 rounded-full bg-purple-500/30 animate-pulse delay-500"></div>
+                    <div class="absolute bottom-10 right-6 w-1.5 h-1.5 rounded-full bg-indigo-400/50 animate-pulse delay-300"></div>
+                    <div class="absolute bottom-24 -left-6 w-10 h-10 rounded-full border-2 border-blue-500/20 border-t-transparent border-r-transparent rotate-45"></div>
 
-                    <!-- Photo (smooth edge blend into background) -->
-                    <img src="file_00000000fcc871f5a31b72f0c1eff7f2.png" alt="Abhay" class="relative z-10 w-[300px] h-[400px] object-cover object-top" style="mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 85%, transparent 100%), linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%); mask-composite: intersect; -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 85%, transparent 100%), linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%); -webkit-mask-composite: source-in;">
+                    <!-- Photo with tight radial mask to hide office background -->
+                    <img src="file_00000000fcc871f5a31b72f0c1eff7f2.png" alt="Abhay" class="relative z-10 w-[320px] h-[430px] object-cover object-top" style="mask-image: radial-gradient(ellipse 72% 68% at 50% 38%, black 35%, transparent 68%); -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 38%, black 35%, transparent 68%);">
                 </div>
             </div>
 
