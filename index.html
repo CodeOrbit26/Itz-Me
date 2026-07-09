@@ -642,7 +642,7 @@ will-change: opacity;
             }
         }
 
-        // === AI Neural Network + Circuit Board Background ===
+        // === AI Constellation — floating nodes with data pulses ===
         const canvas = document.getElementById('network-canvas');
         const ctx = canvas.getContext('2d');
         let W, H;
@@ -651,352 +651,209 @@ will-change: opacity;
         const FPS = 30;
         const FRAME_INTERVAL = 1000 / FPS;
 
-        // Mouse
         let mouse = { x: -9999, y: -9999 };
         document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
         document.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
 
-        // --- Data structures ---
-        let neuralNodes = [];      // nodes arranged in layers
-        let neuralEdges = [];      // connections between layers
-        let circuitNodes = [];     // circuit junction points
-        let circuitTraces = [];    // orthogonal circuit paths
-        let pulses = [];           // traveling data pulses
-        let ambientDots = [];      // floating ambient particles
+        const CONFIG = {
+            particleCount: 45,
+            connectionDist: 160,
+            speed: 0.5,
+            mouseRadius: 130,
+            pulseCount: 8
+        };
+
+        let particles = [];
+        let pulses = [];
 
         function resize() {
             W = canvas.width = window.innerWidth;
             H = canvas.height = window.innerHeight;
-            buildScene();
+            initParticles();
         }
 
-        function buildScene() {
-            neuralNodes = [];
-            neuralEdges = [];
-            circuitNodes = [];
-            circuitTraces = [];
-            pulses = [];
-            ambientDots = [];
-
-            // --- 1. Neural Network Layers (center of screen) ---
-            const layers = 5;
-            const nodesPerLayer = [3, 5, 6, 5, 3];
-            const netCenterX = W * 0.5;
-            const netCenterY = H * 0.45;
-            const layerSpacing = Math.min(W * 0.12, 140);
-            const nodeSpacing = Math.min(H * 0.08, 70);
-            const netStartX = netCenterX - ((layers - 1) * layerSpacing) / 2;
-
-            for (let l = 0; l < layers; l++) {
-                const count = nodesPerLayer[l];
-                const x = netStartX + l * layerSpacing;
-                const startY = netCenterY - ((count - 1) * nodeSpacing) / 2;
-                for (let n = 0; n < count; n++) {
-                    neuralNodes.push({
-                        x: x + (Math.random() - 0.5) * 8,
-                        y: startY + n * nodeSpacing + (Math.random() - 0.5) * 8,
-                        layer: l,
-                        size: l === 0 || l === layers - 1 ? 2.5 : 2.0,
-                        baseX: x,
-                        baseY: startY + n * nodeSpacing,
-                        phase: Math.random() * Math.PI * 2
-                    });
-                }
-            }
-
-            // Connect adjacent layers
-            for (let i = 0; i < neuralNodes.length; i++) {
-                const a = neuralNodes[i];
-                for (let j = 0; j < neuralNodes.length; j++) {
-                    const b = neuralNodes[j];
-                    if (b.layer === a.layer + 1) {
-                        // Don't connect all — skip some for cleaner look
-                        if (Math.random() < 0.6) {
-                            neuralEdges.push({ from: i, to: j });
-                        }
-                    }
-                }
-            }
-
-            // --- 2. Circuit Traces (spreading outward from neural net) ---
-            const circuitCount = 12;
-            for (let c = 0; c < circuitCount; c++) {
-                // Start from a random neural node on the outer layers
-                const outerNodes = neuralNodes.filter(n => n.layer === 0 || n.layer === layers - 1);
-                const startNode = outerNodes[Math.floor(Math.random() * outerNodes.length)];
-
-                // Build an orthogonal path outward (2-4 segments)
-                const segments = 2 + Math.floor(Math.random() * 3);
-                const points = [{ x: startNode.x, y: startNode.y }];
-                let cx = startNode.x;
-                let cy = startNode.y;
-                const dirX = cx < netCenterX ? -1 : 1;
-
-                for (let s = 0; s < segments; s++) {
-                    if (s % 2 === 0) {
-                        // Horizontal segment
-                        const len = 40 + Math.random() * 100;
-                        cx += dirX * len;
-                    } else {
-                        // Vertical segment
-                        const len = 30 + Math.random() * 80;
-                        cy += (Math.random() < 0.5 ? -1 : 1) * len;
-                    }
-                    points.push({ x: cx, y: cy });
-                }
-
-                // Add a junction node at the end
-                circuitNodes.push({ x: cx, y: cy, size: 1.8 });
-                circuitTraces.push({ points, totalLen: 0 });
-            }
-
-            // Calculate total length for each trace (for pulse travel)
-            circuitTraces.forEach(t => {
-                let len = 0;
-                for (let i = 1; i < t.points.length; i++) {
-                    const dx = t.points[i].x - t.points[i-1].x;
-                    const dy = t.points[i].y - t.points[i-1].y;
-                    len += Math.sqrt(dx*dx + dy*dy);
-                }
-                t.totalLen = len;
-            });
-
-            // --- 3. Ambient floating particles ---
-            for (let i = 0; i < 20; i++) {
-                ambientDots.push({
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < CONFIG.particleCount; i++) {
+                particles.push({
                     x: Math.random() * W,
                     y: Math.random() * H,
-                    vx: (Math.random() - 0.5) * 0.3,
-                    vy: (Math.random() - 0.5) * 0.3,
-                    size: Math.random() * 1.2 + 0.5,
-                    alpha: Math.random() * 0.3 + 0.1
+                    vx: (Math.random() - 0.5) * CONFIG.speed,
+                    vy: (Math.random() - 0.5) * CONFIG.speed,
+                    size: Math.random() * 1.5 + 1.0
                 });
             }
-
-            // --- 4. Initial pulses ---
-            spawnPulses();
+            initPulses();
         }
 
-        function spawnPulses() {
-            // Neural edge pulses
-            const edgeCount = Math.min(6, neuralEdges.length);
-            for (let i = 0; i < edgeCount; i++) {
-                const edgeIdx = Math.floor(Math.random() * neuralEdges.length);
-                pulses.push({
-                    type: 'neural',
-                    edgeIdx,
-                    t: Math.random(),          // 0–1 progress
-                    speed: 0.008 + Math.random() * 0.008,
-                    life: 1
-                });
-            }
-            // Circuit trace pulses
-            const traceCount = Math.min(4, circuitTraces.length);
-            for (let i = 0; i < traceCount; i++) {
-                const traceIdx = Math.floor(Math.random() * circuitTraces.length);
-                pulses.push({
-                    type: 'circuit',
-                    traceIdx,
-                    t: Math.random(),
-                    speed: 0.005 + Math.random() * 0.006,
-                    life: 1
-                });
+        function initPulses() {
+            pulses = [];
+            for (let i = 0; i < CONFIG.pulseCount; i++) {
+                pulses.push(spawnPulse());
             }
         }
 
-        // Get position along a circuit trace at progress t (0–1)
-        function getTracePos(trace, t) {
-            const targetDist = t * trace.totalLen;
-            let accum = 0;
-            for (let i = 1; i < trace.points.length; i++) {
-                const dx = trace.points[i].x - trace.points[i-1].x;
-                const dy = trace.points[i].y - trace.points[i-1].y;
-                const segLen = Math.sqrt(dx*dx + dy*dy);
-                if (accum + segLen >= targetDist) {
-                    const frac = (targetDist - accum) / segLen;
-                    return {
-                        x: trace.points[i-1].x + dx * frac,
-                        y: trace.points[i-1].y + dy * frac
-                    };
-                }
-                accum += segLen;
-            }
-            const last = trace.points[trace.points.length - 1];
-            return { x: last.x, y: last.y };
+        function spawnPulse() {
+            return {
+                fromIdx: Math.floor(Math.random() * CONFIG.particleCount),
+                toIdx: Math.floor(Math.random() * CONFIG.particleCount),
+                t: 0,
+                speed: 0.01 + Math.random() * 0.015,
+                active: false // will activate when particles are close enough
+            };
         }
-
-        let frameCount = 0;
 
         function animate(timestamp) {
             animId = requestAnimationFrame(animate);
             if (timestamp - lastFrame < FRAME_INTERVAL) return;
             lastFrame = timestamp;
-            frameCount++;
 
             ctx.clearRect(0, 0, W, H);
             const isDark = document.documentElement.classList.contains('dark');
-            const t = frameCount / FPS; // time in seconds
 
-            // Colors
-            const lineColor = isDark ? 'rgba(255,255,255,' : 'rgba(0,0,0,';
-            const accentColor = isDark ? 'rgba(99,102,241,' : 'rgba(79,70,229,'; // indigo
-
-            // --- Neural net: gentle breathing motion ---
-            for (let i = 0; i < neuralNodes.length; i++) {
-                const n = neuralNodes[i];
-                n.x = n.baseX + Math.sin(t * 0.5 + n.phase) * 3;
-                n.y = n.baseY + Math.cos(t * 0.4 + n.phase * 1.3) * 3;
+            // --- Update particles ---
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
 
                 // Mouse repulsion
-                const mdx = n.x - mouse.x;
-                const mdy = n.y - mouse.y;
-                const mDist = mdx*mdx + mdy*mdy;
-                if (mDist < 15000 && mDist > 1) {
-                    const f = (1 - mDist / 15000) * 8;
-                    n.x += (mdx / Math.sqrt(mDist)) * f;
-                    n.y += (mdy / Math.sqrt(mDist)) * f;
+                const mdx = p.x - mouse.x;
+                const mdy = p.y - mouse.y;
+                const mDistSq = mdx * mdx + mdy * mdy;
+                const mRadSq = CONFIG.mouseRadius * CONFIG.mouseRadius;
+                if (mDistSq < mRadSq && mDistSq > 1) {
+                    const f = (1 - mDistSq / mRadSq) * 0.8;
+                    p.vx += (mdx / Math.sqrt(mDistSq)) * f;
+                    p.vy += (mdy / Math.sqrt(mDistSq)) * f;
                 }
+
+                // Speed dampening
+                const spd = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+                if (spd > CONFIG.speed * 1.8) {
+                    p.vx *= 0.94;
+                    p.vy *= 0.94;
+                }
+
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > W) p.vx *= -1;
+                if (p.y < 0 || p.y > H) p.vy *= -1;
             }
 
-            // --- Draw neural edges ---
-            ctx.lineWidth = 0.6;
-            ctx.strokeStyle = lineColor + (isDark ? '0.08)' : '0.05)');
-            ctx.beginPath();
-            for (let i = 0; i < neuralEdges.length; i++) {
-                const e = neuralEdges[i];
-                const a = neuralNodes[e.from];
-                const b = neuralNodes[e.to];
-                ctx.moveTo(a.x, a.y);
-                ctx.lineTo(b.x, b.y);
-            }
-            ctx.stroke();
+            // --- Draw connections (3 opacity buckets) ---
+            const maxDist = CONFIG.connectionDist;
+            const maxDistSq = maxDist * maxDist;
+            const thirdSq = maxDistSq / 3;
 
-            // --- Draw circuit traces ---
+            // Far
             ctx.lineWidth = 0.5;
-            ctx.strokeStyle = lineColor + (isDark ? '0.06)' : '0.04)');
+            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.025)';
             ctx.beginPath();
-            for (let i = 0; i < circuitTraces.length; i++) {
-                const tr = circuitTraces[i].points;
-                ctx.moveTo(tr[0].x, tr[0].y);
-                for (let j = 1; j < tr.length; j++) {
-                    ctx.lineTo(tr[j].x, tr[j].y);
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dSq = dx * dx + dy * dy;
+                    if (dSq >= thirdSq * 2 && dSq < maxDistSq) {
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                    }
                 }
             }
             ctx.stroke();
 
-            // --- Draw circuit junction nodes ---
-            ctx.fillStyle = lineColor + (isDark ? '0.25)' : '0.15)');
+            // Mid
+            ctx.lineWidth = 0.6;
+            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)';
             ctx.beginPath();
-            for (let i = 0; i < circuitNodes.length; i++) {
-                const cn = circuitNodes[i];
-                ctx.moveTo(cn.x + cn.size, cn.y);
-                ctx.arc(cn.x, cn.y, cn.size, 0, 6.2832);
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dSq = dx * dx + dy * dy;
+                    if (dSq >= thirdSq && dSq < thirdSq * 2) {
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                    }
+                }
             }
-            ctx.fill();
+            ctx.stroke();
 
-            // Small square junction markers (circuit board style)
-            ctx.fillStyle = lineColor + (isDark ? '0.12)' : '0.07)');
-            for (let i = 0; i < circuitNodes.length; i++) {
-                const cn = circuitNodes[i];
-                ctx.fillRect(cn.x - 2, cn.y - 2, 4, 4);
-            }
-
-            // --- Draw neural nodes ---
-            // Outer glow
-            ctx.fillStyle = isDark ? 'rgba(99,102,241,0.08)' : 'rgba(79,70,229,0.05)';
+            // Close
+            ctx.lineWidth = 0.8;
+            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.08)';
             ctx.beginPath();
-            for (let i = 0; i < neuralNodes.length; i++) {
-                const n = neuralNodes[i];
-                const r = n.size * 2.5;
-                ctx.moveTo(n.x + r, n.y);
-                ctx.arc(n.x, n.y, r, 0, 6.2832);
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dSq = dx * dx + dy * dy;
+                    if (dSq < thirdSq) {
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                    }
+                }
             }
-            ctx.fill();
+            ctx.stroke();
 
-            // Core dot
-            ctx.fillStyle = lineColor + (isDark ? '0.45)' : '0.35)');
+            // --- Draw particle dots ---
+            ctx.fillStyle = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.4)';
             ctx.beginPath();
-            for (let i = 0; i < neuralNodes.length; i++) {
-                const n = neuralNodes[i];
-                ctx.moveTo(n.x + n.size, n.y);
-                ctx.arc(n.x, n.y, n.size, 0, 6.2832);
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                ctx.moveTo(p.x + p.size, p.y);
+                ctx.arc(p.x, p.y, p.size, 0, 6.2832);
             }
             ctx.fill();
 
             // Bright center
-            ctx.fillStyle = lineColor + (isDark ? '0.7)' : '0.5)');
+            ctx.fillStyle = isDark ? 'rgba(255,255,255,0.75)' : 'rgba(0,0,0,0.55)';
             ctx.beginPath();
-            for (let i = 0; i < neuralNodes.length; i++) {
-                const n = neuralNodes[i];
-                const r = n.size * 0.4;
-                ctx.moveTo(n.x + r, n.y);
-                ctx.arc(n.x, n.y, r, 0, 6.2832);
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                const r = p.size * 0.35;
+                ctx.moveTo(p.x + r, p.y);
+                ctx.arc(p.x, p.y, r, 0, 6.2832);
             }
             ctx.fill();
 
-            // --- Update & draw pulses ---
-            for (let i = pulses.length - 1; i >= 0; i--) {
-                const p = pulses[i];
-                p.t += p.speed;
+            // --- Data Pulses (indigo dots traveling along connections) ---
+            for (let i = 0; i < pulses.length; i++) {
+                const pulse = pulses[i];
+                const a = particles[pulse.fromIdx];
+                const b = particles[pulse.toIdx];
+                if (!a || !b) { pulses[i] = spawnPulse(); continue; }
 
-                let px, py;
-                if (p.type === 'neural') {
-                    const e = neuralEdges[p.edgeIdx];
-                    if (!e) { pulses.splice(i, 1); continue; }
-                    const a = neuralNodes[e.from];
-                    const b = neuralNodes[e.to];
-                    px = a.x + (b.x - a.x) * p.t;
-                    py = a.y + (b.y - a.y) * p.t;
+                const dx = a.x - b.x;
+                const dy = a.y - b.y;
+                const dSq = dx * dx + dy * dy;
+
+                // Only show pulse if particles are connected (within range)
+                if (dSq < maxDistSq) {
+                    pulse.active = true;
+                    pulse.t += pulse.speed;
+
+                    const px = a.x + (b.x - a.x) * pulse.t;
+                    const py = a.y + (b.y - a.y) * pulse.t;
+
+                    // Outer glow
+                    ctx.fillStyle = isDark ? 'rgba(99,102,241,0.35)' : 'rgba(79,70,229,0.25)';
+                    ctx.beginPath();
+                    ctx.arc(px, py, 3, 0, 6.2832);
+                    ctx.fill();
+
+                    // Core
+                    ctx.fillStyle = isDark ? 'rgba(129,140,248,0.85)' : 'rgba(99,102,241,0.7)';
+                    ctx.beginPath();
+                    ctx.arc(px, py, 1.3, 0, 6.2832);
+                    ctx.fill();
                 } else {
-                    const tr = circuitTraces[p.traceIdx];
-                    if (!tr) { pulses.splice(i, 1); continue; }
-                    const pos = getTracePos(tr, p.t);
-                    px = pos.x;
-                    py = pos.y;
+                    pulse.active = false;
                 }
 
-                if (p.t > 1) {
-                    // Respawn with random target
-                    p.t = 0;
-                    if (p.type === 'neural') {
-                        p.edgeIdx = Math.floor(Math.random() * neuralEdges.length);
-                    } else {
-                        p.traceIdx = Math.floor(Math.random() * circuitTraces.length);
-                    }
-                    continue;
+                // Reset when done or connection lost
+                if (pulse.t > 1 || !pulse.active) {
+                    pulses[i] = spawnPulse();
                 }
-
-                // Glow
-                const alpha = isDark ? 0.5 : 0.4;
-                ctx.fillStyle = accentColor + alpha + ')';
-                ctx.beginPath();
-                ctx.arc(px, py, 2.5, 0, 6.2832);
-                ctx.fill();
-
-                // Bright core
-                ctx.fillStyle = accentColor + (isDark ? '0.9)' : '0.7)');
-                ctx.beginPath();
-                ctx.arc(px, py, 1.2, 0, 6.2832);
-                ctx.fill();
-            }
-
-            // --- Ambient floating dots ---
-            ctx.fillStyle = lineColor + (isDark ? '0.15)' : '0.10)');
-            ctx.beginPath();
-            for (let i = 0; i < ambientDots.length; i++) {
-                const d = ambientDots[i];
-                d.x += d.vx;
-                d.y += d.vy;
-                if (d.x < 0 || d.x > W) d.vx *= -1;
-                if (d.y < 0 || d.y > H) d.vy *= -1;
-                ctx.moveTo(d.x + d.size, d.y);
-                ctx.arc(d.x, d.y, d.size, 0, 6.2832);
-            }
-            ctx.fill();
-
-            // Spawn new pulses periodically
-            if (frameCount % (FPS * 3) === 0) {
-                spawnPulses();
             }
         }
 
