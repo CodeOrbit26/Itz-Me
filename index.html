@@ -148,6 +148,7 @@ will-change: opacity;
             </div>
 
             <button onclick="navigateTo('projects')" class="nav-link px-4 py-2 text-[11px] font-medium text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors rounded-full hover:bg-black/5 dark:hover:bg-white/5" data-target="projects">Work</button>
+            <button onclick="navigateTo('services')" class="nav-link px-4 py-2 text-[11px] font-medium text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors rounded-full hover:bg-black/5 dark:hover:bg-white/5" data-target="services">Services</button>
             <button onclick="navigateTo('skills')" class="nav-link px-4 py-2 text-[11px] font-medium text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors rounded-full hover:bg-black/5 dark:hover:bg-white/5" data-target="skills">Stack</button>
             
             <div class="w-px h-4 bg-black/5 dark:bg-white/10 mx-1"></div>
@@ -244,62 +245,62 @@ will-change: opacity;
                     <div class="text-[10px] text-neutral-500 uppercase tracking-widest mt-1">Expected Grad</div>
                 </div>
             </div>
+        </section>
 
-            <!-- Services I Offer Section -->
-            <div class="mt-32 opacity-0 animate-fade-in delay-700">
-                <div class="mb-12">
-                    <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest block mb-2">What I Do</span>
-                    <h2 class="text-3xl font-semibold tracking-tight text-neutral-900 dark:text-white">Services I Offer</h2>
+        <!-- SECTION: SERVICES -->
+        <section id="services" class="page-section hidden">
+            <div class="mb-12">
+                <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest block mb-2">What I Do</span>
+                <h2 class="text-3xl font-semibold tracking-tight text-neutral-900 dark:text-white">Services I Offer</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Service 1 -->
+                <div class="glass-card rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/10">
+                        <iconify-icon icon="lucide:brain-circuit" width="24" class="text-white"></iconify-icon>
+                    </div>
+                    <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-3">AI Agent Architecture</h3>
+                    <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed mb-6">Designing &amp; building multi-node agentic workflows, conversational graphs, and LLM reasoning loops.</p>
+                    <a href="mailto:abhaygupta26nov11@gmail.com" class="text-xs font-semibold text-indigo-500 hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1 mt-auto">
+                        Learn More <iconify-icon icon="lucide:arrow-right" width="12" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+                    </a>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Service 1 -->
-                    <div class="glass-card rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group">
-                        <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/10">
-                            <iconify-icon icon="lucide:brain-circuit" width="24" class="text-white"></iconify-icon>
-                        </div>
-                        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-3">AI Agent Architecture</h3>
-                        <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed mb-6">Designing &amp; building multi-node agentic workflows, conversational graphs, and LLM reasoning loops.</p>
-                        <a href="mailto:abhaygupta26nov11@gmail.com" class="text-xs font-semibold text-indigo-500 hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1 mt-auto">
-                            Learn More <iconify-icon icon="lucide:arrow-right" width="12" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
-                        </a>
-                    </div>
 
-                    <!-- Service 2 -->
-                    <div class="glass-card rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group">
-                        <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-500 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/10">
-                            <iconify-icon icon="lucide:code" width="24" class="text-white"></iconify-icon>
-                        </div>
-                        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-3">Web Development</h3>
-                        <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed mb-6">Building fast, responsive, and modern web applications with clean, production-ready code.</p>
-                        <a href="mailto:abhaygupta26nov11@gmail.com" class="text-xs font-semibold text-indigo-500 hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1 mt-auto">
-                            Learn More <iconify-icon icon="lucide:arrow-right" width="12" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
-                        </a>
+                <!-- Service 2 -->
+                <div class="glass-card rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-500 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/10">
+                        <iconify-icon icon="lucide:code" width="24" class="text-white"></iconify-icon>
                     </div>
+                    <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-3">Web Development</h3>
+                    <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed mb-6">Building fast, responsive, and modern web applications with clean, production-ready code.</p>
+                    <a href="mailto:abhaygupta26nov11@gmail.com" class="text-xs font-semibold text-indigo-500 hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1 mt-auto">
+                        Learn More <iconify-icon icon="lucide:arrow-right" width="12" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+                    </a>
+                </div>
 
-                    <!-- Service 3 -->
-                    <div class="glass-card rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group">
-                        <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center mb-6 shadow-lg shadow-purple-500/10">
-                            <iconify-icon icon="lucide:infinity" width="24" class="text-white"></iconify-icon>
-                        </div>
-                        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-3">DevOps &amp; Cloud</h3>
-                        <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed mb-6">Implementing CI/CD pipelines, containerized deployments, and scalable infrastructure as code.</p>
-                        <a href="mailto:abhaygupta26nov11@gmail.com" class="text-xs font-semibold text-indigo-500 hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1 mt-auto">
-                            Learn More <iconify-icon icon="lucide:arrow-right" width="12" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
-                        </a>
+                <!-- Service 3 -->
+                <div class="glass-card rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center mb-6 shadow-lg shadow-purple-500/10">
+                        <iconify-icon icon="lucide:infinity" width="24" class="text-white"></iconify-icon>
                     </div>
+                    <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-3">DevOps &amp; Cloud</h3>
+                    <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed mb-6">Implementing CI/CD pipelines, containerized deployments, and scalable infrastructure as code.</p>
+                    <a href="mailto:abhaygupta26nov11@gmail.com" class="text-xs font-semibold text-indigo-500 hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1 mt-auto">
+                        Learn More <iconify-icon icon="lucide:arrow-right" width="12" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+                    </a>
+                </div>
 
-                    <!-- Service 4 -->
-                    <div class="glass-card rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group">
-                        <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center mb-6 shadow-lg shadow-amber-500/10">
-                            <iconify-icon icon="lucide:zap" width="24" class="text-white"></iconify-icon>
-                        </div>
-                        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-3">Intelligent Automation</h3>
-                        <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed mb-6">Orchestrating autonomous workflows and data pipelines with persistent hybrid memory models.</p>
-                        <a href="mailto:abhaygupta26nov11@gmail.com" class="text-xs font-semibold text-indigo-500 hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1 mt-auto">
-                            Learn More <iconify-icon icon="lucide:arrow-right" width="12" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
-                        </a>
+                <!-- Service 4 -->
+                <div class="glass-card rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center mb-6 shadow-lg shadow-amber-500/10">
+                        <iconify-icon icon="lucide:zap" width="24" class="text-white"></iconify-icon>
                     </div>
+                    <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-3">Intelligent Automation</h3>
+                    <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed mb-6">Orchestrating autonomous workflows and data pipelines with persistent hybrid memory models.</p>
+                    <a href="mailto:abhaygupta26nov11@gmail.com" class="text-xs font-semibold text-indigo-500 hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1 mt-auto">
+                        Learn More <iconify-icon icon="lucide:arrow-right" width="12" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+                    </a>
                 </div>
             </div>
         </section>
