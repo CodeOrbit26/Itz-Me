@@ -129,7 +129,7 @@ will-change: opacity;
     <div class="ambient-glow" style="bottom:-15%;right:-8%;width:600px;height:600px;background:radial-gradient(circle,rgba(168,85,247,0.10) 0%,transparent 70%)"></div>
 
     <!-- Neural Network Canvas -->
-    <canvas id="network-canvas" class="fixed top-0 left-0 w-full h-full z-0 opacity-70 dark:opacity-90 pointer-events-none"></canvas>
+    <canvas id="network-canvas" class="fixed top-0 left-0 w-full h-full z-0 opacity-50 dark:opacity-65 pointer-events-none"></canvas>
 
     <!-- Navigation -->
     <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-40 w-full max-w-fit px-2">
@@ -722,8 +722,8 @@ will-change: opacity;
             const thirdSq = maxDistSq / 3;
 
             // Bucket 1: far lines (⅔–1 of maxDist)
-            ctx.lineWidth = 0.6;
-            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)';
+            ctx.lineWidth = 0.5;
+            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.035)';
             ctx.beginPath();
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
@@ -740,8 +740,8 @@ will-change: opacity;
             ctx.stroke();
 
             // Bucket 2: mid lines (⅓–⅔ of maxDist)
-            ctx.lineWidth = 0.8;
-            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)';
+            ctx.lineWidth = 0.6;
+            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.06)';
             ctx.beginPath();
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
@@ -758,8 +758,8 @@ will-change: opacity;
             ctx.stroke();
 
             // Bucket 3: close lines (0–⅓ of maxDist) — most visible
-            ctx.lineWidth = 1.0;
-            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.15)';
+            ctx.lineWidth = 0.8;
+            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.10)';
             ctx.beginPath();
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
@@ -776,7 +776,7 @@ will-change: opacity;
             ctx.stroke();
 
             // --- Draw particle dots ---
-            ctx.fillStyle = isDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.6)';
+            ctx.fillStyle = isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.45)';
             ctx.beginPath();
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
@@ -786,7 +786,7 @@ will-change: opacity;
             ctx.fill();
 
             // Bright center dot on each particle for a subtle glow node effect
-            ctx.fillStyle = isDark ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.7)';
+            ctx.fillStyle = isDark ? 'rgba(255,255,255,0.75)' : 'rgba(0,0,0,0.55)';
             ctx.beginPath();
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
