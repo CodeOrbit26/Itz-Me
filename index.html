@@ -212,25 +212,14 @@ will-change: opacity;
                     <!-- Glass Bento Card with double border look -->
                     <div class="glass-card rounded-3xl p-1.5 w-full h-full relative overflow-hidden shadow-2xl shadow-indigo-500/5 dark:shadow-black/40">
                         <div class="h-full w-full bg-neutral-100 dark:bg-[#0E0E10] rounded-[18px] overflow-hidden relative border border-black/5 dark:border-white/5">
-                            <!-- Photo -->
-                            <img src="file_00000000fcc871f5a31b72f0c1eff7f2.png" alt="Abhay" class="w-full h-full object-cover object-center scale-[1.05] group-hover:scale-110 transition-transform duration-700 ease-out">
+                            <!-- Photo (Directly rounded corners to avoid sharp edges) -->
+                            <img src="file_00000000fcc871f5a31b72f0c1eff7f2.png" alt="Abhay" class="w-full h-full object-cover object-center scale-[1.05] group-hover:scale-110 rounded-[18px] transition-transform duration-700 ease-out">
                             
                             <!-- Glass shine reflection overlay on hover -->
-                            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+                            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-[18px]"></div>
                             
                             <!-- Bottom gradient shadow overlay -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
-                            
-                            <!-- Top Right: Location Badge -->
-                            <div class="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-white/10 dark:bg-black/40 border border-white/10 backdrop-blur-md">
-                                <span class="text-[8px] font-mono text-neutral-200 dark:text-neutral-300 tracking-widest uppercase">Loc // IN</span>
-                            </div>
-
-                            <!-- Bottom Left: Active Badge -->
-                            <div class="absolute bottom-4 left-4 px-3 py-1 rounded-full bg-white/10 dark:bg-black/40 border border-white/10 backdrop-blur-md flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span class="text-[9px] font-mono text-white tracking-widest uppercase">System Active</span>
-                            </div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none rounded-[18px]"></div>
                         </div>
                     </div>
                 </div>
