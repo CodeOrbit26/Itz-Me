@@ -639,19 +639,26 @@ will-change: opacity;
             }
         }
 
-        // --- Lightweight Network Animation (30fps, batched draws) ---
+        // --- Constellation Network Animation ---
         const canvas = document.getElementById('network-canvas');
         const ctx = canvas.getContext('2d');
         let width, height;
         let particles = [];
         let animId = null;
         let lastFrame = 0;
-        const FRAME_INTERVAL = 1000 / 30; // Cap at 30fps — plenty smooth for ambient bg
+        const FRAME_INTERVAL = 1000 / 30; // 30fps
+
+        // Mouse tracking for subtle interaction
+        let mouse = { x: -9999, y: -9999 };
+        document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        document.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
 
         const CONFIG = {
-            particleCount: 30,
-            connectionDist: 120,
-            speed: 0.25
+            particleCount: 45,
+            connectionDist: 160,
+            mouseRadius: 120,
+            mouseForce: 0.02,
+            speed: 0.3
         };
 
         function resize() {
@@ -668,61 +675,129 @@ will-change: opacity;
                     y: Math.random() * height,
                     vx: (Math.random() - 0.5) * CONFIG.speed,
                     vy: (Math.random() - 0.5) * CONFIG.speed,
-                    size: Math.random() * 1.5 + 0.5
+                    size: Math.random() * 1.2 + 0.8  // uniform 0.8–2.0 range
                 });
             }
         }
 
         function animate(timestamp) {
             animId = requestAnimationFrame(animate);
-
-            // Throttle to ~30fps
             if (timestamp - lastFrame < FRAME_INTERVAL) return;
             lastFrame = timestamp;
 
             ctx.clearRect(0, 0, width, height);
             const isDark = document.documentElement.classList.contains('dark');
-            const dotColor = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)';
 
-            // Update positions & draw dots in a single batched path
-            ctx.fillStyle = dotColor;
-            ctx.beginPath();
+            // --- Update particle positions ---
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
+
+                // Gentle mouse attraction
+                const mdx = mouse.x - p.x;
+                const mdy = mouse.y - p.y;
+                const mDistSq = mdx * mdx + mdy * mdy;
+                const mRadSq = CONFIG.mouseRadius * CONFIG.mouseRadius;
+                if (mDistSq < mRadSq && mDistSq > 1) {
+                    const force = CONFIG.mouseForce * (1 - mDistSq / mRadSq);
+                    p.vx += mdx * force * 0.01;
+                    p.vy += mdy * force * 0.01;
+                }
+
+                // Dampen velocity to prevent runaway speed
+                const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+                if (speed > CONFIG.speed * 1.5) {
+                    p.vx *= 0.95;
+                    p.vy *= 0.95;
+                }
+
                 p.x += p.vx;
                 p.y += p.vy;
                 if (p.x < 0 || p.x > width) p.vx *= -1;
                 if (p.y < 0 || p.y > height) p.vy *= -1;
-                ctx.moveTo(p.x + p.size, p.y);
-                ctx.arc(p.x, p.y, p.size, 0, 6.2832);
             }
-            ctx.fill();
 
-            // Draw connections — batch lines by opacity bucket for fewer state changes
-            const minDist = CONFIG.connectionDist;
-            const minDistSq = minDist * minDist;
-            const baseAlpha = isDark ? 0.12 : 0.08;
-            ctx.lineWidth = 0.5;
+            // --- Draw connections in 3 opacity buckets (far → close) ---
+            const maxDist = CONFIG.connectionDist;
+            const maxDistSq = maxDist * maxDist;
+            const thirdSq = maxDistSq / 3;
 
-            // Single path for all lines (uniform low alpha — avoids per-line strokeStyle changes)
-            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
+            // Bucket 1: far lines (⅔–1 of maxDist)
+            ctx.lineWidth = 0.4;
+            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)';
             ctx.beginPath();
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
                 for (let j = i + 1; j < particles.length; j++) {
                     const p2 = particles[j];
-                    const dx = p.x - p2.x;
-                    const dy = p.y - p2.y;
-                    if (dx * dx + dy * dy < minDistSq) {
+                    const dx = p.x - p2.x; const dy = p.y - p2.y;
+                    const dSq = dx * dx + dy * dy;
+                    if (dSq >= thirdSq * 2 && dSq < maxDistSq) {
                         ctx.moveTo(p.x, p.y);
                         ctx.lineTo(p2.x, p2.y);
                     }
                 }
             }
             ctx.stroke();
+
+            // Bucket 2: mid lines (⅓–⅔ of maxDist)
+            ctx.lineWidth = 0.5;
+            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.04)';
+            ctx.beginPath();
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                for (let j = i + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const dx = p.x - p2.x; const dy = p.y - p2.y;
+                    const dSq = dx * dx + dy * dy;
+                    if (dSq >= thirdSq && dSq < thirdSq * 2) {
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                    }
+                }
+            }
+            ctx.stroke();
+
+            // Bucket 3: close lines (0–⅓ of maxDist) — most visible
+            ctx.lineWidth = 0.7;
+            ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.08)';
+            ctx.beginPath();
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                for (let j = i + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const dx = p.x - p2.x; const dy = p.y - p2.y;
+                    const dSq = dx * dx + dy * dy;
+                    if (dSq < thirdSq) {
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                    }
+                }
+            }
+            ctx.stroke();
+
+            // --- Draw particle dots (all batched into one path) ---
+            ctx.fillStyle = isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.5)';
+            ctx.beginPath();
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                ctx.moveTo(p.x + p.size, p.y);
+                ctx.arc(p.x, p.y, p.size, 0, 6.2832);
+            }
+            ctx.fill();
+
+            // Bright center dot on each particle for a subtle glow node effect
+            ctx.fillStyle = isDark ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.7)';
+            ctx.beginPath();
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                const r = p.size * 0.4;
+                ctx.moveTo(p.x + r, p.y);
+                ctx.arc(p.x, p.y, r, 0, 6.2832);
+            }
+            ctx.fill();
         }
 
-        // Pause animation when tab is hidden to save CPU
+        // Pause animation when tab is hidden
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 if (animId) { cancelAnimationFrame(animId); animId = null; }
