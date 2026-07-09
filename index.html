@@ -157,71 +157,40 @@ will-change: opacity;
         <!-- SECTION: HERO -->
         <section id="home" class="page-section min-h-[70vh] flex flex-col justify-center">
             
-            <div class="flex flex-col md:flex-row items-center gap-12 md:gap-16">
-                <!-- Left: Text Content -->
-                <div class="flex-1">
-                    <!-- Badge -->
-                    <div class="w-fit mb-8 opacity-0 animate-slide-up">
-                        <div class="px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/5 backdrop-blur-md flex items-center gap-2">
-                            <span class="relative flex h-1.5 w-1.5">
-                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                              <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-indigo-500"></span>
-                            </span>
-                            <span class="text-[10px] font-medium text-indigo-600 dark:text-indigo-300 uppercase tracking-widest">Open to internships</span>
-                        </div>
-                    </div>
-
-                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-semibold tracking-[-0.03em] leading-[0.95] text-neutral-900 dark:text-white mb-6 opacity-0 animate-slide-up delay-100">
-                        Building <br>
-                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-neutral-900 via-neutral-500 to-neutral-900 dark:from-white dark:via-neutral-400 dark:to-white bg-300% animate-shimmer">Agentic Systems.</span>
-                    </h1>
-                    
-                    <div class="text-xl md:text-2xl font-light text-neutral-700 dark:text-[#D1D1D6] mb-8 opacity-0 animate-slide-up delay-150 flex items-center min-h-[36px]">
-                        <span>I'm a&nbsp;</span>
-                        <span id="typewriter-text" class="text-indigo-600 dark:text-indigo-400 font-semibold"></span>
-                        <span class="cursor-blink text-indigo-600 dark:text-indigo-400"></span>
-                    </div>
-                    
-                    <p class="text-base md:text-lg text-neutral-600 dark:text-neutral-400 font-light max-w-xl leading-relaxed opacity-0 animate-slide-up delay-200">
-                        Software Engineer specializing in <span class="text-neutral-900 dark:text-white font-medium">AI & Agentic Systems</span>. Building full-stack products with integrated LLM-driven automation and long-term memory.
-                    </p>
-
-                    <div class="flex items-center gap-4 mt-10 opacity-0 animate-slide-up delay-300">
-                        <button onclick="navigateTo('projects')" class="group relative px-6 py-3 bg-neutral-900 dark:bg-[#EDEDED] text-white dark:text-black text-xs font-semibold rounded-full overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]">
-                            <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
-                            <span class="relative z-10 flex items-center gap-2">View Projects <iconify-icon icon="lucide:arrow-right" width="14"></iconify-icon></span>
-                        </button>
-                        <a href="https://github.com/CodeOrbit26" target="_blank" class="px-6 py-3 text-neutral-600 dark:text-neutral-400 text-xs font-medium hover:text-black dark:hover:text-white transition-colors flex items-center gap-2">
-                            <iconify-icon icon="lucide:github" width="16"></iconify-icon> GitHub
-                        </a>
-                    </div>
+            <!-- Badge -->
+            <div class="w-fit mb-8 opacity-0 animate-slide-up">
+                <div class="px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/5 backdrop-blur-md flex items-center gap-2">
+                    <span class="relative flex h-1.5 w-1.5">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-indigo-500"></span>
+                    </span>
+                    <span class="text-[10px] font-medium text-indigo-600 dark:text-indigo-300 uppercase tracking-widest">Open to internships</span>
                 </div>
+            </div>
 
-                <!-- Right: Photo with Vibrant Glow (Reference Style) -->
-                <div class="hidden md:flex flex-shrink-0 opacity-0 animate-fade-in delay-300 relative items-center justify-center w-[380px] h-[460px]">
-                    <!-- Large vibrant gradient circle — bigger, covers more area -->
-                    <div class="absolute w-[360px] h-[360px] rounded-full top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2" style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 35%, #C026D3 65%, #EC4899 100%); opacity: 0.6; filter: blur(8px);"></div>
+            <h1 class="text-5xl md:text-8xl font-semibold tracking-[-0.03em] leading-[0.95] text-neutral-900 dark:text-white mb-6 opacity-0 animate-slide-up delay-100">
+                Building <br>
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-neutral-900 via-neutral-500 to-neutral-900 dark:from-white dark:via-neutral-400 dark:to-white bg-300% animate-shimmer">Agentic Systems.</span>
+            </h1>
+            
+            <div class="text-xl md:text-2xl font-light text-neutral-700 dark:text-[#D1D1D6] mb-8 opacity-0 animate-slide-up delay-150 flex items-center min-h-[36px]">
+                <span>I'm a&nbsp;</span>
+                <span id="typewriter-text" class="text-indigo-600 dark:text-indigo-400 font-semibold"></span>
+                <span class="cursor-blink text-indigo-600 dark:text-indigo-400"></span>
+            </div>
+            
+            <p class="text-lg md:text-xl text-neutral-600 dark:text-neutral-400 font-light max-w-xl leading-relaxed opacity-0 animate-slide-up delay-200">
+                Software Engineer specializing in <span class="text-neutral-900 dark:text-white font-medium">AI & Agentic Systems</span>. Building full-stack products with integrated LLM-driven automation and long-term memory.
+            </p>
 
-                    <!-- Floating decorative elements -->
-                    <div class="absolute top-2 right-0 w-6 h-6 rounded-full border-2 border-pink-500/30"></div>
-                    <div class="absolute top-14 -left-8 grid grid-cols-3 gap-1 opacity-30">
-                        <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
-                        <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
-                        <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
-                        <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
-                        <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
-                        <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
-                    </div>
-                    <div class="absolute top-8 right-[-20px] w-10 h-[2px] bg-gradient-to-r from-purple-500/50 to-transparent rotate-[-35deg]"></div>
-                    <div class="absolute bottom-16 right-[-10px] w-7 h-[2px] bg-gradient-to-r from-pink-500/30 to-transparent rotate-[25deg]"></div>
-                    <div class="absolute top-6 left-6 w-2 h-2 rounded-full bg-blue-500/40 animate-pulse"></div>
-                    <div class="absolute bottom-20 -left-3 w-2.5 h-2.5 rounded-full bg-purple-500/30 animate-pulse delay-500"></div>
-                    <div class="absolute bottom-10 right-6 w-1.5 h-1.5 rounded-full bg-indigo-400/50 animate-pulse delay-300"></div>
-                    <div class="absolute bottom-24 -left-6 w-10 h-10 rounded-full border-2 border-blue-500/20 border-t-transparent border-r-transparent rotate-45"></div>
-
-                    <!-- Photo with tight radial mask to hide office background -->
-                    <img src="file_00000000fcc871f5a31b72f0c1eff7f2.png" alt="Abhay" class="relative z-10 w-[320px] h-[430px] object-cover object-top" style="mask-image: radial-gradient(ellipse 72% 68% at 50% 38%, black 35%, transparent 68%); -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 38%, black 35%, transparent 68%);">
-                </div>
+            <div class="flex items-center gap-4 mt-10 opacity-0 animate-slide-up delay-300">
+                <button onclick="navigateTo('projects')" class="group relative px-6 py-3 bg-neutral-900 dark:bg-[#EDEDED] text-white dark:text-black text-xs font-semibold rounded-full overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+                    <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                    <span class="relative z-10 flex items-center gap-2">View Projects <iconify-icon icon="lucide:arrow-right" width="14"></iconify-icon></span>
+                </button>
+                <a href="https://github.com/CodeOrbit26" target="_blank" class="px-6 py-3 text-neutral-600 dark:text-neutral-400 text-xs font-medium hover:text-black dark:hover:text-white transition-colors flex items-center gap-2">
+                    <iconify-icon icon="lucide:github" width="16"></iconify-icon> GitHub
+                </a>
             </div>
 
             <!-- Stats Ticker -->
