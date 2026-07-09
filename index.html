@@ -197,18 +197,38 @@ will-change: opacity;
                     </div>
                 </div>
 
-                <!-- Right: Photo with Glow -->
-                <div class="hidden md:flex flex-shrink-0 opacity-0 animate-fade-in delay-300 relative items-center justify-center">
-                    <!-- Gradient glow circle behind photo -->
-                    <div class="absolute w-[340px] h-[340px] rounded-full" style="background: radial-gradient(circle, rgba(99,102,241,0.25) 0%, rgba(168,85,247,0.15) 40%, transparent 70%);"></div>
+                <!-- Right: Photo with Vibrant Glow (Reference Style) -->
+                <div class="hidden md:flex flex-shrink-0 opacity-0 animate-fade-in delay-300 relative items-center justify-center w-[380px] h-[440px]">
+                    <!-- Large vibrant gradient circle -->
+                    <div class="absolute w-[320px] h-[320px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%]" style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 35%, #C026D3 65%, #EC4899 100%); opacity: 0.7; filter: blur(2px);"></div>
+
                     <!-- Decorative ring -->
-                    <div class="absolute w-[360px] h-[360px] rounded-full border border-indigo-500/10"></div>
-                    <!-- Small floating accent dots -->
-                    <div class="absolute -top-4 right-6 w-3 h-3 rounded-full bg-indigo-500/30 animate-pulse"></div>
-                    <div class="absolute bottom-8 -left-4 w-2 h-2 rounded-full bg-purple-500/40 animate-pulse delay-500"></div>
-                    <div class="absolute top-12 -right-2 w-1.5 h-1.5 rounded-full bg-indigo-400/50 animate-pulse delay-300"></div>
-                    <!-- Photo -->
-                    <img src="file_00000000fcc871f5a31b72f0c1eff7f2.png" alt="Abhay Gupta" class="relative z-10 w-[280px] h-[340px] object-cover object-top rounded-2xl shadow-2xl shadow-indigo-500/10 border border-white/10">
+                    <div class="absolute w-[350px] h-[350px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] border border-white/5"></div>
+
+                    <!-- Floating decorative elements -->
+                    <!-- Circle outline top-right -->
+                    <div class="absolute top-4 right-2 w-6 h-6 rounded-full border-2 border-pink-500/40"></div>
+                    <!-- Small dot cluster top-left -->
+                    <div class="absolute top-16 -left-6 grid grid-cols-3 gap-1 opacity-40">
+                        <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
+                        <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
+                        <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
+                        <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
+                        <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
+                        <div class="w-1 h-1 rounded-full bg-indigo-400"></div>
+                    </div>
+                    <!-- Diagonal slash accent -->
+                    <div class="absolute top-10 right-[-20px] w-12 h-[2px] bg-gradient-to-r from-purple-500/60 to-transparent rotate-[-35deg]"></div>
+                    <div class="absolute bottom-20 right-[-10px] w-8 h-[2px] bg-gradient-to-r from-pink-500/40 to-transparent rotate-[25deg]"></div>
+                    <!-- Floating dot accents -->
+                    <div class="absolute top-8 left-8 w-2 h-2 rounded-full bg-blue-500/50 animate-pulse"></div>
+                    <div class="absolute bottom-24 -left-2 w-2.5 h-2.5 rounded-full bg-purple-500/40 animate-pulse delay-500"></div>
+                    <div class="absolute bottom-12 right-4 w-1.5 h-1.5 rounded-full bg-indigo-400/60 animate-pulse delay-300"></div>
+                    <!-- Arc element left -->
+                    <div class="absolute bottom-28 -left-6 w-12 h-12 rounded-full border-2 border-blue-500/25 border-t-transparent border-r-transparent rotate-45"></div>
+
+                    <!-- Photo (cutout style — no border, no rounded corners, blended) -->
+                    <img src="file_00000000fcc871f5a31b72f0c1eff7f2.png" alt="Abhay" class="relative z-10 w-[300px] h-[400px] object-cover object-top" style="mask-image: linear-gradient(to bottom, black 80%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);">
                 </div>
             </div>
 
