@@ -168,10 +168,16 @@ will-change: opacity;
                 </div>
             </div>
 
-            <h1 class="text-5xl md:text-8xl font-semibold tracking-[-0.03em] leading-[0.95] text-neutral-900 dark:text-white mb-8 opacity-0 animate-slide-up delay-100">
+            <h1 class="text-5xl md:text-8xl font-semibold tracking-[-0.03em] leading-[0.95] text-neutral-900 dark:text-white mb-6 opacity-0 animate-slide-up delay-100">
                 Building <br>
                 <span class="bg-clip-text text-transparent bg-gradient-to-r from-neutral-900 via-neutral-500 to-neutral-900 dark:from-white dark:via-neutral-400 dark:to-white bg-300% animate-shimmer">Agentic Systems.</span>
             </h1>
+            
+            <div class="text-xl md:text-2xl font-light text-neutral-700 dark:text-[#D1D1D6] mb-8 opacity-0 animate-slide-up delay-150 flex items-center min-h-[36px]">
+                <span>I'm a&nbsp;</span>
+                <span id="typewriter-text" class="text-indigo-600 dark:text-indigo-400 font-semibold"></span>
+                <span class="cursor-blink text-indigo-600 dark:text-indigo-400"></span>
+            </div>
             
             <p class="text-lg md:text-xl text-neutral-600 dark:text-neutral-400 font-light max-w-xl leading-relaxed opacity-0 animate-slide-up delay-200">
                 Software Engineer specializing in <span class="text-neutral-900 dark:text-white font-medium">AI & Agentic Systems</span>. Building full-stack products with integrated LLM-driven automation and long-term memory.
@@ -871,11 +877,51 @@ will-change: opacity;
             resizeTimeout = setTimeout(resize, 200);
         });
 
+        // --- Typewriter Effect ---
+        const typewriterText = document.getElementById('typewriter-text');
+        const roles = [
+            "Software Engineer.",
+            "React Native Developer.",
+            "AI Agent Architect.",
+            "Full-Stack Developer."
+        ];
+        let roleIdx = 0;
+        let charIdx = 0;
+        let isDeleting = false;
+        let typingSpeed = 100;
+
+        function typeEffect() {
+            if (!typewriterText) return;
+            const currentRole = roles[roleIdx];
+            if (isDeleting) {
+                typewriterText.textContent = currentRole.substring(0, charIdx - 1);
+                charIdx--;
+                typingSpeed = 50;
+            } else {
+                typewriterText.textContent = currentRole.substring(0, charIdx + 1);
+                charIdx++;
+                typingSpeed = 120;
+            }
+
+            if (!isDeleting && charIdx === currentRole.length) {
+                typingSpeed = 2000; // Pause at end of word
+                isDeleting = true;
+            } else if (isDeleting && charIdx === 0) {
+                isDeleting = false;
+                roleIdx = (roleIdx + 1) % roles.length;
+                typingSpeed = 500; // Pause before typing next word
+            }
+
+            setTimeout(typeEffect, typingSpeed);
+        }
+
+        // Init
         document.addEventListener('DOMContentLoaded', () => {
             const navLinks = document.querySelectorAll('.nav-link[data-target="home"]');
             navLinks.forEach(l => l.classList.add('active'));
             resize();
             animId = requestAnimationFrame(animate);
+            setTimeout(typeEffect, 800); // Start typewriter after layout animations load
         });
 
     </script>
