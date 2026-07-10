@@ -46,7 +46,7 @@ shimmer: {
 }
 </script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=JetBrains+Mono:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=JetBrains+Mono:wght@400&family=Caveat:wght@400;700&display=swap');
 body {
 font-family: 'Inter', sans-serif;
 -webkit-font-smoothing: antialiased;
@@ -66,14 +66,23 @@ background: rgba(15, 17, 18, 0.88);
 border: 1px solid rgba(255, 255, 255, 0.08);
 }
 .glass-card {
-background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
-border: 1px solid rgba(255,255,255,0.05);
-transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+}
+.glass-card:hover {
+    border-color: rgba(99, 102, 241, 0.2);
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+}
+.dark .glass-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
+    border: 1px solid rgba(255,255,255,0.05);
 }
 .dark .glass-card:hover {
-border-color: rgba(255,255,255,0.15);
-background: rgba(255,255,255,0.02);
-transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.02);
+    transform: translateY(-2px);
 }
 /* Glow Effects */
 .glow-text {
@@ -81,6 +90,12 @@ text-shadow: 0 0 20px rgba(255,255,255,0.3);
 }
 /* Nav Link Active State */
 .nav-link { position: relative; }
+.nav-link.active {
+    color: #171717 !important;
+}
+.dark .nav-link.active {
+    color: #ffffff !important;
+}
 .nav-link.active::after {
 content: '';
 position: absolute;
@@ -104,6 +119,34 @@ vertical-align: bottom;
 animation: blink 1s step-end infinite;
 }
 @keyframes blink { 50% { opacity: 0; } }
+
+/* Blinking/Pulsing status dot animation */
+@keyframes status-blink {
+    0%, 100% {
+        opacity: 0.5;
+        transform: scale(0.9);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+}
+@keyframes status-ping {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    70%, 100% {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+.animate-status-blink {
+    animation: status-blink 1.4s infinite ease-in-out;
+}
+.animate-status-ping {
+    animation: status-ping 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
 /* Animation Delays */
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
@@ -128,8 +171,54 @@ will-change: opacity;
 .animate-spin-slow {
     animation: spin-slow 20s linear infinite;
 }
+@keyframes spin-reverse {
+    0% { transform: rotate(360deg); }
+    100% { transform: rotate(0deg); }
+}
+.animate-spin-reverse {
+    animation: spin-reverse 1.5s linear infinite;
+}
+/* Page Transitions */
+.page-section {
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+.page-section.hidden-transition {
+    opacity: 0;
+    transform: translateY(20px);
+}
+.page-section.visible-transition {
+    opacity: 1;
+    transform: translateY(0);
+}
+/* Scroll Reveal Animation Styles */
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+.scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
 </style></head>
 <body class="bg-[#FAFAFA] dark:bg-dark text-neutral-900 dark:text-[#EAEAEA] min-h-screen relative overflow-x-hidden transition-colors duration-500">
+    <!-- Premium Page Loader -->
+    <div id="page-loader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#FAFAFA] dark:bg-dark transition-all duration-700 ease-out">
+        <div class="relative flex items-center justify-center w-20 h-20">
+            <!-- Outer glowing spinner -->
+            <div class="w-16 h-16 rounded-full border-t-2 border-r-2 border-indigo-500 animate-spin"></div>
+            <!-- Inner glowing spinner -->
+            <div class="absolute w-10 h-10 rounded-full border-b-2 border-l-2 border-purple-500 animate-spin-reverse"></div>
+            <!-- Center developer dot -->
+            <div class="absolute w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse"></div>
+        </div>
+        <div class="mt-8 flex flex-col items-center gap-1">
+            <span class="text-[10px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.25em] animate-pulse">Abhay Gupta</span>
+            <span class="text-[9px] text-neutral-400 dark:text-neutral-600 uppercase tracking-widest font-mono">Portfolio Loading...</span>
+        </div>
+    </div>
 
     <!-- Ambient Background Glows — radial-gradient instead of blur-[120px] for GPU performance -->
     <div class="ambient-glow" style="top:-15%;left:-8%;width:500px;height:500px;background:radial-gradient(circle,rgba(99,102,241,0.18) 0%,transparent 70%)"></div>
@@ -147,34 +236,45 @@ will-change: opacity;
                 <span class="text-xs font-semibold tracking-tight">Abhay</span>
             </div>
 
-            <button onclick="navigateTo('projects')" class="nav-link px-4 py-2 text-[11px] font-medium text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors rounded-full hover:bg-black/5 dark:hover:bg-white/5" data-target="projects">Work</button>
-            <button onclick="navigateToServices()" class="nav-link px-4 py-2 text-[11px] font-medium text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors rounded-full hover:bg-black/5 dark:hover:bg-white/5" data-target="services">Services</button>
-            <button onclick="navigateTo('skills')" class="nav-link px-4 py-2 text-[11px] font-medium text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors rounded-full hover:bg-black/5 dark:hover:bg-white/5" data-target="skills">Stack</button>
+            <button onclick="navigateToServices()" class="nav-link px-4 py-2 text-[11px] font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors rounded-full hover:bg-black/5 dark:hover:bg-white/5" data-target="services">Services</button>
+            <button onclick="navigateTo('projects')" class="nav-link px-4 py-2 text-[11px] font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors rounded-full hover:bg-black/5 dark:hover:bg-white/5" data-target="projects">Work</button>
+            <button onclick="navigateTo('skills')" class="nav-link px-4 py-2 text-[11px] font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors rounded-full hover:bg-black/5 dark:hover:bg-white/5" data-target="skills">Stack</button>
+            <button onclick="navigateTo('developer')" class="nav-link px-4 py-2 text-[11px] font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors rounded-full hover:bg-black/5 dark:hover:bg-white/5" data-target="developer">About Me</button>
             
             <div class="w-px h-4 bg-black/5 dark:bg-white/10 mx-1"></div>
             
-            <button onclick="toggleTheme()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-neutral-500 dark:text-neutral-400">
+            <button onclick="toggleTheme()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-neutral-600 dark:text-neutral-400">
                 <iconify-icon id="theme-icon" icon="lucide:sun" width="14"></iconify-icon>
             </button>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="relative z-10 pt-32 pb-20 max-w-6xl mx-auto px-6">
+    <main class="relative z-10 pt-24 md:pt-28 pb-20 max-w-6xl mx-auto px-6">
 
         <!-- SECTION: HERO -->
-        <section id="home" class="page-section">
+        <section id="home" class="page-section visible-transition">
             
-            <div class="min-h-[70vh] flex flex-col justify-center">
-                <div class="flex flex-col md:flex-row items-center gap-12 md:gap-16">
+            <div class="min-h-[58vh] flex flex-col justify-center">
+                <div class="flex flex-col md:flex-row items-center gap-12 md:gap-16 relative">
+                    <!-- Hand-drawn pointing arrow (Desktop only) -->
+                    <div class="hidden lg:flex absolute right-[310px] top-[30px] flex-col items-center pointer-events-none z-20">
+                        <span class="text-neutral-500 dark:text-neutral-400 font-['Caveat'] text-2xl font-bold rotate-[-12deg] translate-x-[-20px] translate-y-[-10px] tracking-wide">That's me!</span>
+                        <svg width="120" height="90" viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-neutral-400 dark:text-neutral-500 opacity-70">
+                            <!-- Curve pointing to the profile picture on the right -->
+                            <path d="M10 15C35 12 70 25 105 70" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            <!-- Arrowhead -->
+                            <path d="M92 68L105 70L102 56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
                 <!-- Left: Text Content -->
                 <div class="flex-1">
                     <!-- Badge -->
                     <div class="w-fit mb-8 opacity-0 animate-slide-up">
                         <div class="px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/5 backdrop-blur-md flex items-center gap-2">
-                            <span class="relative flex h-1.5 w-1.5">
-                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                              <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-indigo-500"></span>
+                            <span class="relative flex h-2 w-2">
+                              <span class="animate-status-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500 animate-status-blink"></span>
                             </span>
                             <span class="text-[10px] font-medium text-indigo-600 dark:text-indigo-300 uppercase tracking-widest">Open to internships</span>
                         </div>
@@ -212,16 +312,13 @@ will-change: opacity;
                     <div class="absolute w-[290px] h-[370px] bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 rounded-[36px] blur-3xl pointer-events-none opacity-85"></div>
                     
                     <!-- Glass Bento Card with distinct borders and highly rounded corners -->
-                    <div class="glass-card rounded-[36px] p-2 w-full h-full relative overflow-hidden shadow-2xl shadow-indigo-500/5 dark:shadow-black/40 border border-black/10 dark:border-white/20">
-                        <div class="h-full w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-[28px] overflow-hidden relative border border-black/5 dark:border-white/10">
+                    <div class="glass-card rounded-[36px] p-1.5 w-full h-full relative overflow-hidden shadow-2xl shadow-indigo-500/5 dark:shadow-black/40 border border-black/5 dark:border-white/10">
+                        <div class="h-full w-full rounded-[30px] overflow-hidden relative">
                             <!-- Photo (Directly rounded corners, full opacity) -->
-                            <img src="file_00000000fcc871f5a31b72f0c1eff7f2.png" alt="Abhay" class="w-full h-full object-cover object-center scale-[1.05] group-hover:scale-110 rounded-[28px] transition-transform duration-700 ease-out">
-                            
-                            <!-- Vignette overlay that matches card background colors -->
-                            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,#FAFAFA_98%)] dark:bg-[radial-gradient(ellipse_at_center,transparent_30%,#0A0A0A_98%)] pointer-events-none rounded-[28px]"></div>
+                            <img src="file_00000000fcc871f5a31b72f0c1eff7f2.png" alt="Abhay" class="w-full h-full object-cover object-center scale-[1.05] group-hover:scale-110 rounded-[30px] transition-transform duration-700 ease-out">
                             
                             <!-- Glass shine reflection overlay on hover -->
-                            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-[28px]"></div>
+                            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-[30px]"></div>
                         </div>
                     </div>
                 </div>
@@ -229,7 +326,7 @@ will-change: opacity;
             </div>
 
             <!-- Stats Ticker -->
-            <div class="mt-24 pt-8 border-t border-black/5 dark:border-white/5 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-0 animate-fade-in delay-500">
+            <div class="mt-12 md:mt-16 pt-8 border-t border-black/5 dark:border-white/5 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-0 animate-fade-in delay-500">
                 <div>
                     <div class="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-white">2nd</div>
                     <div class="text-[10px] text-neutral-500 uppercase tracking-widest mt-1">Year B.Tech</div>
@@ -247,70 +344,105 @@ will-change: opacity;
                     <div class="text-[10px] text-neutral-500 uppercase tracking-widest mt-1">Expected Grad</div>
                 </div>
             </div>
-            <!-- Services I Offer Section (Scroll Target) -->
-            <div id="services" class="w-full mt-32 opacity-0 animate-fade-in delay-700">
-                <div class="mb-12">
+            <div id="services" class="w-full mt-32">
+                <div class="mb-12 scroll-reveal">
                     <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest block mb-2">What I Do</span>
                     <h2 class="text-3xl font-semibold tracking-tight text-neutral-900 dark:text-white">Services I Offer</h2>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <!-- Service 1 -->
-                    <div class="glass-card rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="glass-card scroll-reveal rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group" style="transition-delay: 100ms;">
                         <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/10">
                             <iconify-icon icon="lucide:brain-circuit" width="24" class="text-white"></iconify-icon>
                         </div>
                         <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-3">AI Agent Architecture</h3>
-                        <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed mb-6">Designing &amp; building multi-node agentic workflows, conversational graphs, and LLM reasoning loops.</p>
+                        <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6">Designing &amp; building multi-node agentic workflows, conversational graphs, and LLM reasoning loops.</p>
                         <a href="mailto:abhaygupta26nov11@gmail.com" class="text-xs font-semibold text-indigo-500 hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1 mt-auto">
                             Learn More <iconify-icon icon="lucide:arrow-right" width="12" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
                         </a>
                     </div>
 
                     <!-- Service 2 -->
-                    <div class="glass-card rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="glass-card scroll-reveal rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group" style="transition-delay: 200ms;">
                         <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-500 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/10">
                             <iconify-icon icon="lucide:code" width="24" class="text-white"></iconify-icon>
                         </div>
                         <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-3">Web Development</h3>
-                        <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed mb-6">Building fast, responsive, and modern web applications with clean, production-ready code.</p>
+                        <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6">Building fast, responsive, and modern web applications with clean, production-ready code.</p>
                         <a href="mailto:abhaygupta26nov11@gmail.com" class="text-xs font-semibold text-indigo-500 hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1 mt-auto">
                             Learn More <iconify-icon icon="lucide:arrow-right" width="12" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
                         </a>
                     </div>
 
                     <!-- Service 3 -->
-                    <div class="glass-card rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="glass-card scroll-reveal rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group" style="transition-delay: 300ms;">
                         <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center mb-6 shadow-lg shadow-purple-500/10">
                             <iconify-icon icon="lucide:infinity" width="24" class="text-white"></iconify-icon>
                         </div>
                         <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-3">DevOps &amp; Cloud</h3>
-                        <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed mb-6">Implementing CI/CD pipelines, containerized deployments, and scalable infrastructure as code.</p>
+                        <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6">Implementing CI/CD pipelines, containerized deployments, and scalable infrastructure as code.</p>
                         <a href="mailto:abhaygupta26nov11@gmail.com" class="text-xs font-semibold text-indigo-500 hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1 mt-auto">
                             Learn More <iconify-icon icon="lucide:arrow-right" width="12" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
                         </a>
                     </div>
 
                     <!-- Service 4 -->
-                    <div class="glass-card rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="glass-card scroll-reveal rounded-[24px] p-8 flex flex-col items-center text-center border border-black/5 dark:border-white/10 hover:-translate-y-2 transition-all duration-300 group" style="transition-delay: 400ms;">
                         <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center mb-6 shadow-lg shadow-amber-500/10">
                             <iconify-icon icon="lucide:zap" width="24" class="text-white"></iconify-icon>
                         </div>
                         <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-3">Intelligent Automation</h3>
-                        <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed mb-6">Orchestrating autonomous workflows and data pipelines with persistent hybrid memory models.</p>
+                        <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6">Orchestrating autonomous workflows and data pipelines with persistent hybrid memory models.</p>
                         <a href="mailto:abhaygupta26nov11@gmail.com" class="text-xs font-semibold text-indigo-500 hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1 mt-auto">
                             Learn More <iconify-icon icon="lucide:arrow-right" width="12" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
                         </a>
+                    </div>
+            </div>
+
+            <!-- SECTION: OPPORTUNITY / CTA -->
+            <div class="py-20 mt-20 scroll-reveal border-t border-black/5 dark:border-white/5 relative overflow-hidden bg-neutral-50/50 dark:bg-black/10 rounded-[32px]">
+                <!-- Grid/Ambient backgrounds -->
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.03)_0%,transparent_70%)] pointer-events-none"></div>
+                
+                <div class="max-w-6xl mx-auto px-6 flex flex-col items-center justify-center text-center relative z-10">
+                    <h2 class="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight text-neutral-900 dark:text-white mb-4 max-w-3xl leading-snug">
+                        I'm currently looking to join a <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 dark:from-indigo-400 dark:via-purple-400 dark:to-indigo-400 bg-300% animate-shimmer">cross-functional team</span>
+                    </h2>
+                    <p class="text-neutral-600 dark:text-neutral-400 text-base md:text-lg max-w-2xl font-light leading-relaxed">
+                        that values building next-generation AI agents &amp; intelligent systems.
+                    </p>
+                    
+                    <!-- Tech stack cluster (Single row, clean & professional) -->
+                    <div class="flex items-center justify-center gap-4 mt-8 flex-wrap">
+                        <div class="w-12 h-12 rounded-full border border-neutral-200 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="Python">
+                            <iconify-icon icon="logos:python" width="20"></iconify-icon>
+                        </div>
+                        <div class="w-12 h-12 rounded-full border border-neutral-200 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="TypeScript">
+                            <iconify-icon icon="logos:typescript-icon" width="20"></iconify-icon>
+                        </div>
+                        <div class="w-12 h-12 rounded-full border border-neutral-200 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="Next.js">
+                            <iconify-icon icon="logos:nextjs-icon" width="20"></iconify-icon>
+                        </div>
+                        <div class="w-12 h-12 rounded-full border border-neutral-200 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="React">
+                            <iconify-icon icon="logos:react" width="20"></iconify-icon>
+                        </div>
+                        <div class="w-12 h-12 rounded-full border border-neutral-200 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="Docker">
+                            <iconify-icon icon="logos:docker-icon" width="22"></iconify-icon>
+                        </div>
+                        <div class="w-12 h-12 rounded-full border border-neutral-200 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="OpenAI">
+                            <iconify-icon icon="logos:openai-icon" width="18" class="dark:invert"></iconify-icon>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- SECTION: PROJECTS (Bento Grid) -->
-        <section id="projects" class="page-section hidden">
+        <section id="projects" class="page-section hidden-transition hidden">
             <div class="mb-12 animate-slide-up">
                 <h2 class="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-white">Selected Works</h2>
-                <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-2 max-w-md">Engineering high-dimensional solutions for complex real-world problems.</p>
+                <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-2 max-w-md">Engineering high-dimensional solutions for complex real-world problems.</p>
             </div>
 
             <!-- Bento Grid -->
@@ -330,16 +462,16 @@ will-change: opacity;
                              <div class="flex justify-between items-start mb-2">
                                 <div>
                                     <h3 class="text-xl font-medium text-neutral-900 dark:text-white">Constware SaaS</h3>
-                                    <p class="text-sm text-neutral-500 mt-1">Full-stack monorepo construction platform with a ReAct LLM ordering agent.</p>
+                                    <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-1">Full-stack monorepo construction platform with a ReAct LLM ordering agent.</p>
                                 </div>
                                 <div class="w-8 h-8 rounded-full border border-black/10 dark:border-white/10 flex items-center justify-center group-hover:bg-indigo-500 group-hover:border-indigo-500 group-hover:text-white transition-all">
                                     <iconify-icon icon="lucide:arrow-up-right" width="16"></iconify-icon>
                                 </div>
                             </div>
                             <div class="flex gap-2 mt-4">
-                                <span class="text-[10px] uppercase tracking-wider border border-black/5 dark:border-white/10 px-2 py-1 rounded text-neutral-500">Turborepo</span>
-                                <span class="text-[10px] uppercase tracking-wider border border-black/5 dark:border-white/10 px-2 py-1 rounded text-neutral-500">Prisma</span>
-                                <span class="text-[10px] uppercase tracking-wider border border-black/5 dark:border-white/10 px-2 py-1 rounded text-neutral-500">PostgreSQL</span>
+                                <span class="text-[10px] uppercase tracking-wider font-semibold border border-neutral-200 dark:border-white/10 px-2.5 py-1 rounded bg-neutral-100 dark:bg-white/5 text-neutral-700 dark:text-neutral-300">Turborepo</span>
+                                <span class="text-[10px] uppercase tracking-wider font-semibold border border-neutral-200 dark:border-white/10 px-2.5 py-1 rounded bg-neutral-100 dark:bg-white/5 text-neutral-700 dark:text-neutral-300">Prisma</span>
+                                <span class="text-[10px] uppercase tracking-wider font-semibold border border-neutral-200 dark:border-white/10 px-2.5 py-1 rounded bg-neutral-100 dark:bg-white/5 text-neutral-700 dark:text-neutral-300">PostgreSQL</span>
                             </div>
                         </div>
                     </div>
@@ -353,7 +485,7 @@ will-change: opacity;
                         </div>
                         <div class="p-5 border-t border-black/5 dark:border-white/5">
                             <h3 class="text-base font-medium text-neutral-900 dark:text-white">Aria Platform</h3>
-                            <p class="text-xs text-neutral-500 mt-1">16-node LangGraph agent graph memory platform.</p>
+                            <p class="text-xs text-neutral-600 dark:text-neutral-400 mt-1">16-node LangGraph agent graph memory platform.</p>
                         </div>
                     </div>
                 </div>
@@ -366,7 +498,7 @@ will-change: opacity;
                         </div>
                         <div class="p-5 border-t border-black/5 dark:border-white/5">
                             <h3 class="text-base font-medium text-neutral-900 dark:text-white">SocialX Marketplace</h3>
-                            <p class="text-xs text-neutral-500 mt-1">Engagement exchange platform with double-entry security.</p>
+                            <p class="text-xs text-neutral-600 dark:text-neutral-400 mt-1">Engagement exchange platform with double-entry security.</p>
                         </div>
                     </div>
                 </div>
@@ -375,7 +507,7 @@ will-change: opacity;
         </section>
 
         <!-- SECTION: SKILLS (Modern Grid) -->
-        <section id="skills" class="page-section hidden">
+        <section id="skills" class="page-section hidden-transition hidden">
             <div class="mb-12 animate-slide-up">
                 <h2 class="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-white">Technical Stack</h2>
                 <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-2">Tools of the trade.</p>
@@ -544,65 +676,150 @@ will-change: opacity;
             </div>
         </section>
 
-        <!-- SECTION: OPPORTUNITY / CTA -->
-        <section class="py-20 border-t border-black/5 dark:border-white/5 relative overflow-hidden bg-neutral-50/50 dark:bg-black/10">
-            <!-- Grid/Ambient backgrounds -->
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.03)_0%,transparent_70%)] pointer-events-none"></div>
-            
-            <div class="max-w-6xl mx-auto px-6 flex flex-col items-center justify-center text-center relative z-10">
-                <h2 class="text-3xl md:text-5xl font-semibold tracking-tight text-neutral-900 dark:text-white mb-8 leading-[1.25] max-w-4xl">
-                    I'm currently looking to join a <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 dark:from-indigo-400 dark:via-purple-400 dark:to-indigo-400 bg-300% animate-shimmer">cross-functional team</span><br>
-                    <span class="text-neutral-500 dark:text-neutral-400 text-2xl md:text-4xl font-light">that values building next-generation AI agents &amp; intelligent systems.</span>
-                </h2>
+        <!-- SECTION: DEVELOPER -->
+        <section id="developer" class="page-section hidden-transition hidden">
+            <div class="mb-12 animate-slide-up">
+                <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest block mb-2">Developer Profile</span>
+                <h2 class="text-3xl font-semibold tracking-tight text-neutral-900 dark:text-white">Credentials &amp; Downloads</h2>
+                <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-2 max-w-md">Professional records, downloadable resumes, and developer statistics.</p>
+            </div>
+
+            <!-- Bento Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
-                <!-- Tech stack cluster (Bento/Floating layout matching the screenshot) -->
-                <div class="flex flex-col items-center gap-4 mt-8">
-                    <!-- Row 1 -->
-                    <div class="flex flex-wrap items-center justify-center gap-3">
-                        <div class="w-12 h-12 rounded-full border border-black/5 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="Python">
-                            <iconify-icon icon="logos:python" width="20"></iconify-icon>
+                <!-- Card 1: Bio & Summary (Span 2 cols on md) -->
+                <div class="md:col-span-2 glass-card rounded-3xl p-8 border border-black/5 dark:border-white/10 relative overflow-hidden flex flex-col justify-between animate-slide-up delay-100">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
+                                <iconify-icon icon="lucide:user" width="20"></iconify-icon>
+                            </div>
+                            <h3 class="text-lg font-semibold text-neutral-900 dark:text-white">About Me</h3>
                         </div>
-                        <div class="w-12 h-12 rounded-full border border-black/5 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="Docker">
-                            <iconify-icon icon="logos:docker-icon" width="22"></iconify-icon>
-                        </div>
-                        <div class="w-12 h-12 rounded-full border border-black/5 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="React">
-                            <iconify-icon icon="logos:react" width="20"></iconify-icon>
-                        </div>
-                        <div class="w-12 h-12 rounded-full border border-black/5 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="Node.js">
-                            <iconify-icon icon="logos:nodejs-icon" width="20"></iconify-icon>
-                        </div>
-                        <div class="w-12 h-12 rounded-full border border-black/5 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="AWS">
-                            <iconify-icon icon="logos:aws" width="20"></iconify-icon>
-                        </div>
-                        <div class="w-12 h-12 rounded-full border border-black/5 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="JavaScript">
-                            <iconify-icon icon="logos:javascript" width="18"></iconify-icon>
-                        </div>
-                        <div class="w-12 h-12 rounded-full border border-black/5 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="Tailwind CSS">
-                            <iconify-icon icon="logos:tailwindcss-icon" width="20"></iconify-icon>
-                        </div>
+                        <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6 font-light">
+                            I am a Software Engineer and B.Tech student specializing in <span class="text-neutral-900 dark:text-white font-semibold">AI &amp; Agentic Systems</span>. I focus on designing multi-node conversational graphs, long-term hybrid memory structures, and robust backends that leverage LLMs for autonomous problem-solving.
+                        </p>
+                        <p class="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed font-light">
+                            My approach combines mathematical clean-code principles, microservices architecture, and modern DevOps practices to deliver intelligent, state-of-the-art products.
+                        </p>
                     </div>
-                    <!-- Row 2 -->
-                    <div class="flex flex-wrap items-center justify-center gap-3">
-                        <div class="w-12 h-12 rounded-full border border-black/5 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="Git">
-                            <iconify-icon icon="logos:git-icon" width="20"></iconify-icon>
+                    
+                    <div class="flex flex-wrap gap-2 mt-8">
+                        <span class="px-3 py-1 text-[10px] font-semibold rounded-full bg-neutral-100 dark:bg-white/5 border border-neutral-200/60 dark:border-white/5 text-neutral-800 dark:text-neutral-300">AI Architectures</span>
+                        <span class="px-3 py-1 text-[10px] font-semibold rounded-full bg-neutral-100 dark:bg-white/5 border border-neutral-200/60 dark:border-white/5 text-neutral-800 dark:text-neutral-300">LLM Reasoning Loops</span>
+                        <span class="px-3 py-1 text-[10px] font-semibold rounded-full bg-neutral-100 dark:bg-white/5 border border-neutral-200/60 dark:border-white/5 text-neutral-800 dark:text-neutral-300">Full-Stack Dev</span>
+                        <span class="px-3 py-1 text-[10px] font-semibold rounded-full bg-neutral-100 dark:bg-white/5 border border-neutral-200/60 dark:border-white/5 text-neutral-800 dark:text-neutral-300">Cloud Automation</span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Resume / CV Downloads (Span 1 col) -->
+                <div class="glass-card rounded-3xl p-8 border border-black/5 dark:border-white/10 relative overflow-hidden flex flex-col justify-between animate-slide-up delay-150">
+                    <div class="absolute -bottom-10 -right-10 w-48 h-48 bg-purple-500/5 dark:bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500">
+                                <iconify-icon icon="lucide:file-text" width="20"></iconify-icon>
+                            </div>
+                            <h3 class="text-lg font-semibold text-neutral-900 dark:text-white">Download Hub</h3>
                         </div>
-                        <div class="w-12 h-12 rounded-full border border-black/5 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="Next.js">
-                            <iconify-icon icon="logos:nextjs-icon" width="20"></iconify-icon>
+                        <p class="text-xs text-neutral-600 dark:text-neutral-400 mb-6 font-light leading-relaxed">
+                            Access my latest curriculum vitae and resume in standard PDF formats.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-3">
+                        <a href="Abhay_Gupta_Resume.pdf" download class="group w-full py-3 bg-neutral-900 dark:bg-white text-white dark:text-black font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/10 transition-all flex items-center justify-center gap-2 text-xs">
+                            <iconify-icon icon="lucide:download" width="14" class="group-hover:-translate-y-0.5 transition-transform"></iconify-icon> Download Resume
+                        </a>
+                        <a href="Abhay_Gupta_CV.pdf" download class="group w-full py-3 border border-neutral-300 dark:border-white/10 hover:border-black dark:hover:border-white text-neutral-800 dark:text-neutral-200 font-semibold rounded-xl transition-all flex items-center justify-center gap-2 text-xs">
+                            <iconify-icon icon="lucide:file-down" width="14" class="group-hover:translate-y-0.5 transition-transform"></iconify-icon> Download CV
+                        </a>
+                        <span class="text-[9px] text-center text-neutral-400 dark:text-neutral-500 mt-2">PDF formats • Updated 2026</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Education & Credentials -->
+                <div class="glass-card rounded-3xl p-8 border border-black/5 dark:border-white/10 relative overflow-hidden flex flex-col justify-between animate-slide-up delay-200">
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                                <iconify-icon icon="lucide:graduation-cap" width="20"></iconify-icon>
+                            </div>
+                            <h3 class="text-lg font-semibold text-neutral-900 dark:text-white">Education</h3>
                         </div>
-                        <div class="w-12 h-12 rounded-full border border-black/5 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="OpenAI">
-                            <iconify-icon icon="logos:openai-icon" width="18" class="dark:invert"></iconify-icon>
-                        </div>
-                        <div class="w-12 h-12 rounded-full border border-black/5 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="TypeScript">
-                            <iconify-icon icon="logos:typescript-icon" width="20"></iconify-icon>
-                        </div>
-                        <div class="w-12 h-12 rounded-full border border-black/5 dark:border-white/10 bg-white dark:bg-white/5 flex items-center justify-center shadow-sm hover:scale-110 hover:border-indigo-500/30 transition-all duration-300" title="MongoDB">
-                            <iconify-icon icon="logos:mongodb-icon" width="18"></iconify-icon>
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-xs font-semibold text-neutral-900 dark:text-white">B.Tech in Computer Science</h4>
+                                <p class="text-xs text-neutral-600 dark:text-neutral-400 mt-1">Specialization in AI &amp; Software Engineering</p>
+                                <p class="text-[10px] text-indigo-500 dark:text-indigo-400 mt-0.5">Expected Graduation: 2029</p>
+                            </div>
+                            <div class="pt-3 border-t border-black/5 dark:border-white/5">
+                                <h4 class="text-xs font-semibold text-neutral-900 dark:text-white">Academic Highlights</h4>
+                                <p class="text-xs text-neutral-600 dark:text-neutral-400 mt-1">Focusing on Algorithms, Machine Learning architectures, and Systems Engineering.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Card 4: Detailed coding metrics -->
+                <div class="glass-card rounded-3xl p-8 border border-black/5 dark:border-white/10 relative overflow-hidden flex flex-col justify-between animate-slide-up delay-250">
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
+                                <iconify-icon icon="lucide:bar-chart-2" width="20"></iconify-icon>
+                            </div>
+                            <h3 class="text-lg font-semibold text-neutral-900 dark:text-white">Dev Metrics</h3>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-3 rounded-2xl bg-neutral-100 dark:bg-white/5 border border-neutral-200/60 dark:border-white/5">
+                                <div class="text-lg font-bold text-neutral-900 dark:text-white">500+</div>
+                                <div class="text-[9px] text-neutral-600 dark:text-neutral-400 uppercase tracking-wider mt-1 font-semibold">Git Commits</div>
+                            </div>
+                            <div class="p-3 rounded-2xl bg-neutral-100 dark:bg-white/5 border border-neutral-200/60 dark:border-white/5">
+                                <div class="text-lg font-bold text-neutral-900 dark:text-white">16+</div>
+                                <div class="text-[9px] text-neutral-600 dark:text-neutral-400 uppercase tracking-wider mt-1 font-semibold">Agent Nodes</div>
+                            </div>
+                            <div class="p-3 rounded-2xl bg-neutral-100 dark:bg-white/5 border border-neutral-200/60 dark:border-white/5">
+                                <div class="text-lg font-bold text-neutral-900 dark:text-white">100%</div>
+                                <div class="text-[9px] text-neutral-600 dark:text-neutral-400 uppercase tracking-wider mt-1 font-semibold">Commitment</div>
+                            </div>
+                            <div class="p-3 rounded-2xl bg-neutral-100 dark:bg-white/5 border border-neutral-200/60 dark:border-white/5">
+                                <div class="text-lg font-bold text-neutral-900 dark:text-white">24/7</div>
+                                <div class="text-[9px] text-neutral-600 dark:text-neutral-400 uppercase tracking-wider mt-1 font-semibold">Agent uptime</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5: Social / Professional Links -->
+                <div class="glass-card rounded-3xl p-8 border border-black/5 dark:border-white/10 relative overflow-hidden flex flex-col justify-between animate-slide-up delay-300">
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-500">
+                                <iconify-icon icon="lucide:link" width="20"></iconify-icon>
+                            </div>
+                            <h3 class="text-lg font-semibold text-neutral-900 dark:text-white">Professional Hub</h3>
+                        </div>
+                        <p class="text-xs text-neutral-600 dark:text-neutral-400 mb-6 font-light leading-relaxed">
+                            Connect with me across digital networks or reach out directly for collaborations.
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <a href="https://github.com/CodeOrbit26" target="_blank" class="py-2.5 px-4 rounded-xl border border-neutral-200 dark:border-white/10 hover:border-indigo-500/30 bg-neutral-100 dark:bg-white/5 text-xs text-neutral-700 dark:text-neutral-300 hover:text-indigo-500 flex items-center gap-2 transition-all">
+                            <iconify-icon icon="lucide:github" width="14"></iconify-icon> GitHub
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" class="py-2.5 px-4 rounded-xl border border-neutral-200 dark:border-white/10 hover:border-indigo-500/30 bg-neutral-100 dark:bg-white/5 text-xs text-neutral-700 dark:text-neutral-300 hover:text-indigo-500 flex items-center gap-2 transition-all">
+                            <iconify-icon icon="lucide:linkedin" width="14"></iconify-icon> LinkedIn
+                        </a>
+                        <a href="mailto:abhaygupta26nov11@gmail.com" class="col-span-2 py-2.5 px-4 rounded-xl border border-neutral-200 dark:border-white/10 hover:border-indigo-500/30 bg-neutral-100 dark:bg-white/5 text-xs text-neutral-700 dark:text-neutral-300 hover:text-indigo-500 flex items-center justify-center gap-2 transition-all">
+                            <iconify-icon icon="lucide:mail" width="14"></iconify-icon> abhaygupta26nov11@gmail.com
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </section>
-
     </main>
 
     <!-- Footer -->
@@ -645,7 +862,7 @@ will-change: opacity;
         <!-- Watermark Section -->
         <div class="relative flex flex-col items-center justify-center pb-6">
             <!-- Giant Watermark Text -->
-            <div class="select-none pointer-events-none text-[8vw] md:text-[7rem] font-bold tracking-tight leading-none text-neutral-200/60 dark:text-white/[0.03] uppercase whitespace-nowrap">
+            <div class="select-none pointer-events-none text-[8vw] md:text-[7rem] font-bold tracking-tight leading-none text-neutral-200 dark:text-white/[0.03] uppercase whitespace-nowrap">
                 ABHAY GUPTA
             </div>
             <!-- Centered Logo Icon -->
@@ -683,30 +900,72 @@ will-change: opacity;
             }
         }
 
+        let isTransitioning = false;
         function navigateTo(sectionId, skipScroll = false) {
-            // Hide all sections
-            document.querySelectorAll('.page-section').forEach(section => {
-                section.classList.add('hidden');
-                section.classList.remove('animate-slide-up');
-            });
-
-            // Show target
-            const target = document.getElementById(sectionId);
-            if(target) {
-                target.classList.remove('hidden');
-                // Trigger reflow to restart animation
-                void target.offsetWidth;
-                target.classList.add('animate-slide-up');
-            }
+            if (isTransitioning) return;
             
-            // Update Nav
+            const target = document.getElementById(sectionId);
+            if (!target) return;
+            
+            const activeSection = document.querySelector('.page-section.visible-transition');
+            
+            // If the section is already active, just scroll if needed
+            if (activeSection === target) {
+                if (!skipScroll) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+                return;
+            }
+
+            // Update Nav Link Active States immediately for responsive feedback
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
-                if(link.getAttribute('data-target') === sectionId) link.classList.add('active');
+                if (link.getAttribute('data-target') === sectionId) link.classList.add('active');
             });
-            
-            if (!skipScroll) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (activeSection) {
+                isTransitioning = true;
+                
+                // 1. Fade/slide out the active section
+                activeSection.classList.remove('visible-transition');
+                activeSection.classList.add('hidden-transition');
+                
+                // Scroll window smoothly early in transition
+                if (!skipScroll) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+                
+                // 2. Wait for fade-out transition to complete
+                setTimeout(() => {
+                    activeSection.classList.add('hidden');
+                    
+                    // 3. Show and fade/slide in the target section
+                    target.classList.remove('hidden');
+                    
+                    // Trigger reflow
+                    void target.offsetWidth;
+                    
+                    target.classList.remove('hidden-transition');
+                    target.classList.add('visible-transition');
+                    isTransitioning = false;
+                }, 400);
+            } else {
+                // If no active section, just transition in directly
+                document.querySelectorAll('.page-section').forEach(s => {
+                    if (s !== target) {
+                        s.classList.add('hidden', 'hidden-transition');
+                        s.classList.remove('visible-transition');
+                    }
+                });
+                
+                target.classList.remove('hidden');
+                void target.offsetWidth;
+                target.classList.remove('hidden-transition');
+                target.classList.add('visible-transition');
+                
+                if (!skipScroll) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
             }
         }
 
@@ -718,13 +977,13 @@ will-change: opacity;
                 navigateTo('home', true);
             }
             
-            // Allow DOM to update display first
+            // Allow DOM to update display first (longer wait if transitioning)
             setTimeout(() => {
                 const servicesEl = document.getElementById('services');
                 if (servicesEl) {
                     servicesEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
-            }, wasHidden ? 50 : 0);
+            }, wasHidden ? 450 : 0);
             
             // Explicitly set services link active in navbar
             document.querySelectorAll('.nav-link').forEach(link => {
@@ -1055,7 +1314,7 @@ will-change: opacity;
         // --- Typewriter Effect ---
         const typewriterText = document.getElementById('typewriter-text');
         const roles = [
-            "DevOps.",
+            "DevOps Engineer.",
             "AI Agent Architect.",
             "Software Developer.",
             "Full Stack Developer.",
@@ -1091,6 +1350,19 @@ will-change: opacity;
             setTimeout(typeEffect, typingSpeed);
         }
 
+        // Fade out and remove page loader on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('page-loader');
+                if (loader) {
+                    loader.classList.add('opacity-0', 'pointer-events-none');
+                    setTimeout(() => {
+                        loader.remove();
+                    }, 700);
+                }
+            }, 500);
+        });
+
         // Init
         document.addEventListener('DOMContentLoaded', () => {
             const navLinks = document.querySelectorAll('.nav-link[data-target="home"]');
@@ -1098,6 +1370,21 @@ will-change: opacity;
             resize();
             animId = requestAnimationFrame(animate);
             setTimeout(typeEffect, 800); // Start typewriter after layout animations load
+
+            // Scroll Reveal Observer
+            const observerOptions = {
+                threshold: 0.05,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            document.querySelectorAll('.scroll-reveal').forEach(el => revealObserver.observe(el));
         });
 
     </script>
